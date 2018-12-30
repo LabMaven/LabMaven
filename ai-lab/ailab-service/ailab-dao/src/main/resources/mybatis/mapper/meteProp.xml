@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tide.ailab.dao.MetePropDao">
+
+    <!-- 查询设备类型列表，支持名称模糊查询 -->
+    <select id="qryMetePropList" parameterType="MeteProperty"
+        resultType="MeteProperty">
+        select * from t_cfg_meteproperty
+        <where>
+            <if test="property!=null and property!=''">and property like '%' #{property} '%'</if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="addMeteProperty" parameterType="MeteProperty">
+        insert into
+        t_cfg_meteproperty (property, description)
+        values (#{property}, #{description})
+    </insert>
+
+    <update id="updateMeteProperty" parameterType="MeteProperty">
+        update
+        t_cfg_meteproperty
+        set
+        property = #{property},
+        description = #{description}
+        where id = #{id}
+    </update>
+
+    <delete id="delMeteProperty" parameterType="int">
+        delete from
+        t_cfg_meteproperty
+        where id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tide.ailab.dao.DeviceDao">
+
+    <select id="getSensorDevList" parameterType="Sensor" resultType="Sensor">
+        select c.*, b.des bDes, f.des fDes, r.des rDes, e.value,
+           (case when c.alarm_type = 1 then '是'
+            when c.alarm_type = 0 then '否' else '' end) alarmTypeDes 
+        from  b_define b, f_define f, r_define r, c_define c
+        left join 
+        (select tmp1.* from e_data tmp1,
+         (select max(id) id from e_data GROUP BY s_id) tmp2
+         where tmp1.id = tmp2.id
+        ) e
+        on e.s_id = c.s_id
+        where left(c.s_id, 10) = r.r_id
+          and r.f_id = f.f_id
+          and f.b_id = b.b_id
+        <if test="rId!=null and rId!=''">and c.s_id like concat(#{rId}, '%')</if>
+        <if test="cId!=null and cId!=''">and c.s_id like concat(#{rId}, '%')</if>
+        <if test="sType!=null and sType!=''">and c.s_type = #{sType}</if>
+        <if test="sId!=null and sId!=''">and c.s_id = #{sId}</if>
+    </select>
+    
+    <select id="getDeviceList" parameterType="Device" resultType="Device">
+        select t.*
+        from e_list t
+        <where>
+            <if test="rId!=null and rId!=''">t.sId like concat(#{rId}, '%')</if>
+            <if test="cId!=null and cId!=''">and t.sId like concat(#{cId}, '%')</if>
+        </where>
+    </select>
+    
+    <select id="getChartData" parameterType="Sensor" resultType="Sensor">
+        select t.c_id, t.s_id, t.input_time, t.value from e_data t
+        where t.s_id = #{sId}
+        order by input_time desc
+    </select>    
+    
+    <update id="updateSensor" parameterType="Sensor">
+        update c_define
+        set
+        <if test="alarmType != null">alarm_type = #{alarmType},</if>
+        s_id = #{sId}
+        where s_id = #{sId}
+    </update>
+    
+    <insert id="insertSensorData" parameterType="Sensor">
+        insert into e_data(c_id, s_id, port_id, input_time, value)
+        values(#{cId}, #{sId}, 1, UTC_TIME(), #{value})
+    </insert>
+   
+</mapper>

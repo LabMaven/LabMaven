@@ -1,0 +1,161 @@
+ZNV-调度系统
+
+环境搭建 node.js ： 
+    
+
+svn下载dispatch-client: 
+    https://10.72.66.8:8443/nms/iCloud/trunk/V3.12/plat/icloud.dispatch/dispatch-client/
+    无需上传node_modules和dist文件
+
+启动：
+
+开发工具：sublime
+开发流程：
+    第一步：下载代码
+    第二步：安装node.js http://www.runoob.com/nodejs/nodejs-install-setup.html
+    第三步：dos窗口进入项目目录，执行 npm install ；执行 npm run dev
+    第四步：添加菜单，url指定你的xxx.vue
+    第五步：写xxx.vue,参考login.vue，参考ElementUI
+
+
+框架概览
+
+目录机构，各个目录功能介绍
+   build         项目构建配置，webpack打包配置
+   config
+   dist
+   node-modules   依赖js,npm管理
+   src            原始文件，开发人员编辑源码存放
+      main.js     入口js文件
+   static		  (略)
+   index.html     单文件系统的入口文件
+   package.json   包配置文件
+
+重点介绍
+   main.js        逐行代码分析：引入依赖，加载样式文件，初始化数据，初始化VUE实例，挂载路由
+       mock.js    数据模拟，没有后端数据的时候自行构造模拟数据
+       vuex       状态管理
+路由 
+   routes.js      动态配置路由信息
+组件
+   App.vue        后缀.vue，文档结构3部分（模板+js+css）
+界面分析
+   Login.vue      严格遵循Element UI规范，访问Element官网
+                  演示如何跟后端交互
+前端构建工具
+   webpack        打包，
+   babel
+
+技术栈
+   前端           Vue、vuex、vue-routes、axios、mock.js、node.js、wepack、babel、ES6(ES2015)
+   前端样式        Element UI
+   手机端		  Mint UI
+   服务器端        Spring Boot、 Spring Cloud
+   数据库          Mysql
+   缓存数据库      Redis
+   代理工具        Nginx
+
+
+   消息队列        Rocket MQ or Kafka ?
+   分布式          ？
+   自动化部署      ？
+   。。。
+
+基础功能
+   登录登出
+   菜单加载
+   权限管理
+   Token管理  多端Token统一管理：PC、移动端（ios、Android），多项目Token统一管理
+   。。。
+
+
+Spring Boot
+   Jetty、Tomcat
+   Parent ?
+   pom.xml
+   入口 Application
+   多个微服务如何管理
+   JPA Java持久层API
+   Hibernate
+   MockMVC
+   JUnit
+   接口文档 Swagger
+   打包
+
+20180111
+与后端如何交互
+proxyTable如何处理
+route规则
+登录
+    发登录请求
+    失败提示 el-message
+    成功跳转
+菜单
+    Home.vue请求
+    菜单数据构造
+    菜单数据放到Router
+    菜单数据呈现 el-menu
+
+
+    
+与后端交互
+  提炼公共的方法 
+
+ Promise
+ 容器：存储未来才会结束的事件。通常是一个异步事件。
+ 2个特点  
+
+sublime支持vue
+http://blog.csdn.net/maxbyzhou/article/details/72816693
+sublime支持babel语法高亮
+http://blog.csdn.net/luck5154/article/details/54137354  
+sublime必备插件
+http://blog.csdn.net/jianhua0902/article/details/43761899
+sublime快捷用法
+http://www.jb51.net/softjc/153746.html
+
+vue官网
+https://cn.vuejs.org/v2/guide/
+vuex官网
+https://vuex.vuejs.org/zh-cn/intro.html
+vue-router官网
+https://router.vuejs.org/zh-cn/essentials/getting-started.html
+ES6学习
+http://es6.ruanyifeng.com/
+ElementUI官网
+http://element-cn.eleme.io/#/zh-CN/component/installation
+NodeJS学习
+http://www.runoob.com/nodejs/nodejs-install-setup.html
+http://nodejs.cn/api/
+Webpack学习
+https://doc.webpack-china.org/concepts/
+Babel学习
+https://babeljs.cn/
+
+20180112
+菜单加载逻辑：调用时间，接口调用，数据格式，塞入路由，EL渲染
+路由：
+    路由实例、路由挂载、vue组件访问路由实例、当前路由对象、动态路由过滤规则、传入参数
+    路由跳转、路由回退、命名路由、命名视图
+vuex:
+    store、state、mutation、action、getter、
+
+菜单改造：
+    因为$router.options.routes访问路由数据实现动态菜单，这个数据不是响应式的。所以改为vuex来存储。
+    1、先在vuex构造模拟菜单数据
+    2、Home页面获取模拟的菜单数据并展示
+    
+    Home.vue --> Store action.getMenu2() --> menu.js-->Spring getMenu
+         <--   roleMenu    <--
+设备类型管理
+    Element UI 表格
+    列表展示
+    后端分页
+    动态查询
+    增加 弹出页面
+    增加页面 表单
+    修改 弹出页面
+    删除
+
+    细节点
+        action如何传值

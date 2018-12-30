@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tide.ailab.dao.UserRoleDao">
+
+    <select id="getUserRoleList"  resultType="UserRole">
+        select * from t_cfg_userrole
+        <where>
+            <if test="userId!=null and userId!=''">and user_id = #{userId}</if>
+            <if test="roleId!=null and roleId!=''">and role_id = #{roleId}</if>
+        </where>
+    </select>
+
+    <insert id="addUserRole" parameterType="UserRole">
+        insert into t_cfg_userrole (user_id, role_id)
+        values (#{userId}, #{roleId})
+    </insert>
+
+    <insert id="batchAddUserRoles" parameterType="java.util.List">
+        replace into t_cfg_userrole(user_id, role_id) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.userId}, #{item.roleId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteUserRole" parameterType="UserRole">
+        delete from t_cfg_userrole
+        <where>
+            <if test="userId != null and userId != ''">user_id = #{userId}</if>
+            <if test="roleId != null and roleId != ''">and role_id = #{roleId}</if>
+        </where>
+    </delete>
+
+    <delete id="deleteUserRoleByUser" parameterType="User">
+        delete from t_cfg_userrole  where role_id = #{roleIds}
+        and user_id = ( select id from t_cfg_user where account_id= #{accountId} and user_type=#{userType})
+    </delete>
+
+</mapper>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tide.ailab.dao.DeviceTypeDao">
+
+    <!-- 查询设备类型列表，支持名称模糊查询 -->
+    <select id="getDeviceTypeList" parameterType="DeviceType"
+        resultType="DeviceType">
+        select * from t_cfg_devicetype
+        <where>
+            <if test="name!=null and name!=''">and name like '%' #{name} '%'</if>
+        </where>
+        order by id desc
+    </select>
+
+    <!-- 查询设备类型，支持名称全查询 -->
+    <select id="getDeviceType" parameterType="DeviceType"
+        resultType="DeviceType">
+        select * from t_cfg_devicetype
+        <where>
+            <if test="name!=null and name!=''">and name = #{name} </if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="addDeviceType" parameterType="DeviceType">
+        insert into
+        t_cfg_devicetype (name)
+        values ( #{name})
+    </insert>
+
+    <update id="updateDeviceType" parameterType="DeviceType">
+        update
+        t_cfg_devicetype
+        set
+        name = #{name}
+        where id = #{id}
+    </update>
+
+    <delete id="delDeviceType" parameterType="int">
+        delete from
+        t_cfg_devicetype
+        where id = #{id}
+    </delete>
+    
+    
+    <select id="qryDeviceTypeMete" resultType="DeviceTypeMete">
+    select t1.devicetype_id, t1.mete_id, t2.property
+    from t_cfg_device_mete t1, t_cfg_meteproperty t2
+    where t1.mete_id = t2.id
+    </select>
+
+</mapper>

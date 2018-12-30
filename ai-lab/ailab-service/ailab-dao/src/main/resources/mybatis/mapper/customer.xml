@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tide.ailab.dao.CustomerDao">
+
+    <insert id="addCustomer" parameterType="Customer">
+        insert into t_cfg_customer (id, name, description, create_time)
+        values (#{id}, #{name}, #{description}, now())
+    </insert>
+
+    <select id="getCustomerList" parameterType="Customer" resultType="Customer">
+        select * from t_cfg_customer
+        <where>
+            <if test="name!=null and name!=''">and name like '%${name}%'</if>
+            <if test="id!=null and id!=''">and id = #{id}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+    <update id="updateCustomer" parameterType="Customer">
+        update t_cfg_customer
+        set name = #{name},
+        description = #{description},
+        update_time = now()
+        where id = #{id}
+    </update>
+
+    <delete id="deleteCustomer" parameterType="String">
+        delete from t_cfg_customer
+        where id = #{id}
+    </delete>
+
+    <!-- 查看满足条件的账号是否存在：账号名称不能重复、账号编号不能重复-->
+    <select id="checkCustomerExist" parameterType="Customer" resultType="int">
+        select count(1) from t_cfg_customer
+        <where>
+            <if test="id!=null and id!=''">and id <![CDATA[<>]]> #{id}</if>
+            and name = #{name}
+        </where>
+    </select>
+</mapper>

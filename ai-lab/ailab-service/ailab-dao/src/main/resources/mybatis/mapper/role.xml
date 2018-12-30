@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.tide.ailab.dao.RoleDao">
+    <insert id="addRole" parameterType="Role">
+        insert into t_cfg_role (id, name, description)
+        values (#{id}, #{name}, #{description})
+    </insert>
+
+    <select id="getRoleList" parameterType="Role" resultType="Role">
+        select r.*, GROUP_CONCAT(rm.menu_id) menuIds from t_cfg_role r
+        left join t_cfg_rolemenu rm on r.id = rm.role_id
+        <where>
+            <if test="name!=null and name!=''">and name like '%${name}%'</if>
+        </where>
+        group by r.id
+    </select>
+
+    <update id="updateRole" parameterType="Role">
+        update t_cfg_role
+        set    name = #{name},
+        description = #{description}
+        where id = #{id}
+    </update>
+
+    <delete id="deleteRole" parameterType="String">
+        delete from t_cfg_role
+        where id = #{id}
+    </delete>
+
+    <select id="getRoleMenus" parameterType="String" resultType="RoleMenu">
+        select * from t_cfg_rolemenu where role_id = #{roleId}
+    </select>
+
+    <insert id="batchAddRoleMenus" parameterType="java.util.List">
+        insert into t_cfg_rolemenu(role_id, menu_id) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.roleId}, #{item.menuId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteRoleMenu" parameterType="String">
+        delete from t_cfg_rolemenu where role_id = #{roleId}
+    </delete>
+</mapper>

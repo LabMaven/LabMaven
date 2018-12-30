@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tide.ailab.dao.OrderDao">
+
+    <select id="getOrderList" parameterType="Order" resultType="Order">
+        select t.*,
+         (select dict_note from t_cfg_dict td
+          where col_name='order_status' and t.status=td.dict_code) statusDesc
+        from t_cfg_order t
+        <where>
+            <if test="id!=null and id!=''">t.id = #{id}</if>
+            <if test="customerId!=null and customerId!=''">and t.customer_id = #{customerId}</if>
+            <if test="orderNo!=null and orderNo!=''">and t.order_no = #{orderNo}</if>
+            <if test="status!=null">and t.status = #{status}</if>
+            <if test="startCreateTime!=null and startCreateTime!=''">and t.createTime &gt; #{startCreateTime}</if>
+            <if test="endCreateTime!=null and endCreateTime!=''">and t.createTime &lt; #{endCreateTime}</if>
+        </where>
+    </select>
+    
+    <insert id="addOrder" parameterType="Order">
+        insert into t_cfg_order (id, customer_id, order_no, departure, destination,
+            description, name, weight, length, width, height, take_time,
+            status, create_time, remark)
+        values (#{id}, #{customerId}, #{orderNo}, #{departure}, #{destination},
+            #{description}, #{name}, #{weight}, #{length}, #{width}, #{height},
+            #{takeTime}, #{status}, now(), #{remark})
+    </insert>
+
+    <update id="updateOrder" parameterType="Order">
+        update t_cfg_order
+        set status = #{status},
+        <if test="driver != null and driver != ''">driver = #{driver},</if>
+        <if test="driverPhone != null and driverPhone != ''">driver_phone = #{driverPhone},</if>
+        <if test="dispatchers != null and dispatchers != ''">dispatchers = #{dispatchers},</if>
+        <if test="dispatchersPhone != null and dispatchersPhone != ''">dispatchers_phone = #{dispatchers},</if>    
+        update_time = #{updateTime}
+        where id = #{id}
+    </update>
+</mapper>
