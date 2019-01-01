@@ -105,6 +105,8 @@ public class DeviceService {
 			PageHelper.orderBy(page.getOrderBy());
 		}
 
+		// 查询s_pid为空的数据
+		cond.setSpidEmpty("true");
 		List<Sensor> deviceList = deviceDao.getSensorDevList(cond);
 		convertSensorList(deviceList);
 
@@ -154,6 +156,8 @@ public class DeviceService {
 			PageHelper.orderBy(page.getOrderBy());
 		}
 
+		// 查询s_pid不为空的数据
+		cond.setSpidEmpty("false");
 		List<Sensor> deviceList = deviceDao.getSensorDevList(cond);
 		convertSensorList(deviceList);
 

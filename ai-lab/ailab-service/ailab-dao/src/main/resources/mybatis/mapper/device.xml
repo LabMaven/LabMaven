@@ -19,7 +19,10 @@
         <if test="rId!=null and rId!=''">and c.s_id like concat(#{rId}, '%')</if>
         <if test="cId!=null and cId!=''">and c.s_id like concat(#{rId}, '%')</if>
         <if test="sType!=null and sType!=''">and c.s_type = #{sType}</if>
+        <if test="spidEmpty!=null and spidEmpty=='true'">and c.s_pid = ''</if>
+        <if test="spidEmpty!=null and spidEmpty=='false'">and c.s_pid != ''</if>
         <if test="sId!=null and sId!=''">and c.s_id = #{sId}</if>
+        <if test="sPid!=null and sPid!=''">and c.s_pid = #{sPid}</if>
     </select>
     
     <select id="getDeviceList" parameterType="Device" resultType="Device">

@@ -16,6 +16,16 @@ public class Sensor {
 
 	private String cId;
 
+	/**
+	 * 传感器集合id
+	 */
+	private String sPid;
+
+	/**
+	 * sPid查询条件,是否为空
+	 */
+	private String spidEmpty;
+
 	private String sId;
 
 	private String sType;
@@ -75,6 +85,22 @@ public class Sensor {
 
 	public void setcId(String cId) {
 		this.cId = cId;
+	}
+
+	public String getsPid() {
+		return sPid;
+	}
+
+	public void setsPid(String sPid) {
+		this.sPid = sPid;
+	}
+
+	public String getSpidEmpty() {
+		return spidEmpty;
+	}
+
+	public void setSpidEmpty(String spidEmpty) {
+		this.spidEmpty = spidEmpty;
 	}
 
 	public String getsId() {

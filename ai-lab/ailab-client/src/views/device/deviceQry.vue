@@ -1,5 +1,5 @@
 <template>
-<div style="hight: 100%;">
+<div style="hight: 50%;">
     <div class="left">
         <!--el-input placeholder="输入关键字进行过滤" v-model="filterText" style="padding-top: 10px;">
         </el-input-->
@@ -14,9 +14,23 @@
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             
             <el-form :inline="true" :model="filters">
-                <el-form-item style="display:none">
-                    <el-input v-model="filters.sType" placeholder="传感器类型"></el-input>
+                <el-form-item>
+                    <el-select v-model="filters.rId" placeholder="请选择房间" style="width:220px;"
+                        @change="getSensors">
+                        <el-option v-for="item in rooms" :key="item.rId" :label="item.des"
+                           :value="item.rId">
+                        </el-option>
+                    </el-select>
+                    <el-select v-model="filters.sId" placeholder="请选择传感器" style="width:220px;">
+                        <el-option v-for="item in sensors" :key="item.sId" :label="item.des"
+                           :value="item.sId">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-on:click="getSensorChartList">查询</el-button>
+                </el-form-item>
+                <!--
                 <el-form-item>
                     <el-button v-on:click="getSensorList(1)">压差</el-button>
                 </el-form-item>
@@ -38,20 +52,23 @@
                 <el-form-item>
                     <el-button v-on:click="getSensorList(8)">蝶阀风量</el-button>
                 </el-form-item>
+                -->
             </el-form>
 
+            <!--
             <el-tag type="warning" style="float:right;margin:3px;">离线:2</el-tag>
             <el-tag type="danger" style="float:right;margin:3px;">异常:3</el-tag>            
             <el-tag style="float:right;margin:3px;">正常:5</el-tag>
             <el-tag style="float:right;margin:3px;">总数:10</el-tag>
+            -->
         </el-col>
         
         <el-col id="room2">
             <div v-for="(item, index) in deviceList" :class="item.classType"  @click="addTab(item)">
-                <p style="padding-left:100px;" :id="item.sId">
+                <p style="padding-left:100px;" :id="'p_' + item.sId">
                    {{item.fDes}}<br/>
                    {{item.rDes}}<br/>
-                   当前值：{{item.value}}<br/>
+                   {{item.des}}<br/>
                 </p>                
             </div>
         </el-col>
@@ -61,16 +78,24 @@
             </el-pagination>
         </el-col>
         </el-tab-pane>
-        <!--
-        <el-tab-pane label="监控图表" v-model="secondTabVisible" name="second" >
-            <div style="width:'420px',height:'280px'">
-                <div id="main" ref="mainBox" :style="{width:'420px',height:'280px'}"></div>
-            </div>
-        </el-tab-pane>
-        -->
         <el-tab-pane v-for="(item, index) in chartTabs" :key="item.name" :name="item.name" closable
             :label="item.label">
-                <div :id="item.sIdDiv" :style="{width:'700px',height:'280px'}"></div>            
+            <!--列表-->
+            <el-table :data="subSensorList" highlight-current-row v-loading="listLoading" style="width: 70%;">
+                <el-table-column prop="cId" label="控制器ID" min-width="80">
+                </el-table-column>
+            
+                <el-table-column prop="sId" label="传感器ID" min-width="80">
+                </el-table-column>
+
+                <el-table-column prop="des" label="传感器描述" min-width="60">
+                </el-table-column>
+
+                <el-table-column prop="value" label="当前值" min-width="60">
+                </el-table-column>
+            </el-table>
+            <div v-for="(item, index) in subSensorList" :id="'main_'+item.sId"
+                :style="{width:'700px',height:'280px'}"></div>            
         </el-tab-pane>
         </el-tabs>
     </div>
@@ -78,8 +103,7 @@
 </template>
 
 <script>
-import { getDeviceTree, getSensorChartList, getChartData} from '../../api/device';
-import room1 from '@/components/room1.vue';
+import { getRooms, getSensors, getDeviceTree, getSensorChartList, getChartData} from '../../api/device';
 
 let echarts = require('echarts');
 
@@ -91,7 +115,6 @@ require('echarts/lib/component/legend');
 require('echarts/lib/component/markLine');
 
 export default {
-    components:{room1},
     data() {
         return {
             disabled: true,
@@ -113,15 +136,12 @@ export default {
 
             maxlength: 20,
             filters: {
-                parentId: '',
-                parentName: '',
-                des: '',
-                bId : '',
-                fId : '',
-                rId : '',
-                cId : '',
-                sType: ''
+                rId: '',
+                sId: ''
             },
+            rooms: [],
+            sensors: [],
+            subSensorList: [],
             // 分页对象
             pageObj: {
                 pageNum: 1, // 页码
@@ -175,27 +195,46 @@ export default {
                this.getSensorChartList();
             }            
         },
+        getRooms() {
+            getRooms().then(res => {
+                this.rooms = res.data;
+            });
+        },
+        getSensors() {
+            this.sensors = [];
+            this.filters.sId = '';
+            let param = Object.assign({}, this.filters);
+            getSensors(param).then(res => {
+                this.sensors = res.data;
+            });
+        },
         showMessage(data) {
-            document.getElementById(data.sId).style.display='block';
+            document.getElementById('p_'+data.sId).style.display='block';
         },
         hideMessage(data) {
-            document.getElementById(data.sId).style.display='none';
+            document.getElementById('p_'+data.sId).style.display='none';
         },
 
         //显示图表界面
         showChart: function (targetName, sId) {
             this.chartVisible = true;
             this.activeName = targetName;
-            /*ECharts图表*/
-            var timer = setInterval(() => {
-                    var sIdDiv = 'main_' + sId;
-                    var mainDiv = document.getElementById(sIdDiv);
-                    if (mainDiv) {            
-                        clearInterval(timer);
-                        var myChart = echarts.init(mainDiv);
-                        var option = {
+
+            let param = {"sPid" : sId};
+            getSensors(param).then(res => {
+                let { msg, code, data } = res;
+                this.subSensorList = data;
+
+                this.subSensorList.forEach(function(item){
+                    /*ECharts图表*/
+                    var timer = setInterval(() => {
+                        var sIdDiv = 'main_' + item.sId;
+                        var mainDiv = document.getElementById(sIdDiv);
+                        if (mainDiv) {                           
+                            var myChart = echarts.init(mainDiv);
+                            var option = {
                                 title : {
-                                    text : '传感器采集数据趋势图'
+                                    text : item.des+'采集数据趋势图'
                                 },
                                 tooltip : {
                                     trigger : 'axis'
@@ -221,36 +260,41 @@ export default {
                                 }]
                             };
                         
-                        var xData = new Array();
-                        var yData = new Array();
+                            //var xData = new Array();
+                            //var yData = new Array();
 
-                        let param = Object.assign({"sId" : sId}, {"pageSize": 30});
-                        getChartData(param).then(res => {
+                            let param = Object.assign({"sId" : sId}, {"pageSize": 30});
+                            getChartData(param).then(res => {
+                                option.xAxis.data = res.xData;
+                                option.series[0].data = res.yData;
 
-                            option.xAxis.data = res.xData;
-                            option.series[0].data = res.yData;
-
-                            myChart.setOption(option); 
-                        });
+                                myChart.setOption(option); 
+                                clearInterval(timer);
+                            });
+                            
                        
-                        this.echartsTimer = setInterval(() => {
-                            let tabs = this.chartTabs;
-                            let activeName = this.chartTabsValue;
-                            //console.log("activeName:" + activeName);
-                            tabs.forEach((tab, index) => {
-                                if (tab.name == activeName) {
-                                    let param = Object.assign({"sId" : tab.sId}, {"pageSize": 30});
-                                    getChartData(param).then(res => {
-                                        option.xAxis.data = res.xData;
-                                        option.series[0].data = res.yData;
+                    /*        data.echartsTimer = setInterval(() => {
+                                let tabs = data.chartTabs;
+                                let activeName = data.chartTabsValue;
+                                //console.log("activeName:" + activeName);
+                                tabs.forEach((tab, index) => {
+                                    if (tab.name == activeName) {
+                                        let param = Object.assign({"sId" : tab.sId}, {"pageSize": 30});
+                                        getChartData(param).then(res => {
+                                            option.xAxis.data = res.xData;
+                                            option.series[0].data = res.yData;
 
-                                        myChart.setOption(option);                       
-                                    });
-                                }
-                            });    
-                        }, 30000);
-                    }
-            } , 1000);
+                                            myChart.setOption(option);                       
+                                        });
+                                    }
+                                });    
+                            }, 30000);*/
+                        }
+                    } , 1000);
+                });
+
+            });
+            
         },
 
         addTab(target) {
@@ -264,7 +308,7 @@ export default {
             });
             this.chartTabsValue = newTabName;
             this.$nextTick(() => {
-                this.showChart(targetName, target.sId);
+               this.showChart(targetName, target.sId);
             });          
         },
         removeTab(targetName) {
@@ -337,6 +381,7 @@ export default {
     },
     mounted() {
         this.getDeviceTree();
+        this.getRooms();
     },
     beforeDestroy() {
         if(this.firstTimer) { //如果定时器还在运行 或者直接关闭，不用判断
@@ -513,7 +558,7 @@ width:25px;
 
 .right {
     width:78%;
-    hight:100%;
+    hight:100px;
     margin-left:5px;
     float:right
 }
