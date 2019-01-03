@@ -1,4 +1,4 @@
-echo start to build logistics
+echo start to build ai-lab
 mvn clean package
 pause;
 
