@@ -28,7 +28,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item>
-                    <el-button type="primary" v-on:click="getSensorChartList">查询</el-button>
+                    <el-button type="primary" v-on:click="getSensorCollect">查询</el-button>
                 </el-form-item>
                 <!--
                 <el-form-item>
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { getRooms, getSensors, getDeviceTree, getSensorChartList, getChartData} from '../../api/device';
+import { getRooms, getSensors, getDeviceTree, getSensorCollect, getChartData} from '../../api/device';
 
 let echarts = require('echarts');
 
@@ -192,7 +192,7 @@ export default {
 
             if(data.level == 3 || data.level == 4) {
             this.filters.sType = "";
-               this.getSensorChartList();
+               this.getSensorCollect();
             }            
         },
         getRooms() {
@@ -333,12 +333,12 @@ export default {
             this.chartTabs = tabs.filter(tab => tab.name !== targetName);
         },
         
-        getSensorChartList() {
+        getSensorCollect() {
             // 对象合并:查询对象+分页对象
             let param = Object.assign({}, this.filters, this.pageObj);
             
             //this.firstTimer = setInterval(() => {
-                getSensorChartList(param).then(res => {
+                getSensorCollect(param).then(res => {
                     let { msg, code, data } = res;
                     this.deviceList = data.list;
 
@@ -352,7 +352,7 @@ export default {
             this.filters.sType = sType;
             this.filters.rId = "";
             this.filters.cId = "";
-            this.getSensorChartList();
+            this.getSensorCollect();
         }, 
         getDeviceTree(){
             getDeviceTree({"bId" : "b0001"}).then((res) => {
@@ -362,18 +362,18 @@ export default {
         // 每页数量改变
         handleSizeChange(val) {
             this.pageObj.pageSize = val;
-            this.getSensorChartList();
+            this.getSensorCollect();
         },
         // 页码改变
         handleCurrentChange(val) {
             this.pageObj.pageNum = val;
-            this.getSensorChartList();
+            this.getSensorCollect();
         },
         // 排序
         handleSortChange(val) {
             let order = val.order == "descending" ? "desc" : "asc"
             this.pageObj.orderBy = `${val.prop} ${order}`
-            this.getSensorChartList();
+            this.getSensorCollect();
         },
         showDetail() {
             

@@ -21,11 +21,6 @@ public class Sensor {
 	 */
 	private String sPid;
 
-	/**
-	 * sPid查询条件,是否为空
-	 */
-	private String spidEmpty;
-
 	private String sId;
 
 	private String sType;
@@ -93,14 +88,6 @@ public class Sensor {
 
 	public void setsPid(String sPid) {
 		this.sPid = sPid;
-	}
-
-	public String getSpidEmpty() {
-		return spidEmpty;
-	}
-
-	public void setSpidEmpty(String spidEmpty) {
-		this.spidEmpty = spidEmpty;
 	}
 
 	public String getsId() {

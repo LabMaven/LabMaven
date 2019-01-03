@@ -82,16 +82,16 @@ public class DeviceController {
 	}
 
 	/**
-	 * 分页查询传感器列表,显示图标
+	 * 分页查询传感器集合列表,显示图标
 	 * 
 	 * @param page
 	 * @param sensor
 	 * @return
 	 */
-	@RequestMapping(value = "/sensorchartlist", method = RequestMethod.GET)
-	public String getSensorChartList(Page page, Sensor sensor) {
+	@RequestMapping(value = "/sensorcollect", method = RequestMethod.GET)
+	public String getSensorCollect(Page page, Sensor sensor) {
 		JsonResult result = new JsonResult(JsonResultType.SUCCESS);
-		PageInfo<Sensor> pageInfo = deviceService.getSensorChartPage(page, sensor);
+		PageInfo<Sensor> pageInfo = deviceService.getSensorCollectPage(page, sensor);
 		result.add("data", pageInfo);
 		return result.toJSON();
 	}

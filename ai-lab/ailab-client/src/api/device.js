@@ -18,9 +18,9 @@ export const getSensorDevList = params => {
     return callRemoteApi(`${base}/device/sensorlist`, params, GET);
 }
 
-// 查询传感器图标列表
-export const getSensorChartList = params => {
-    return callRemoteApi(`${base}/device/sensorchartlist`, params, GET);
+// 查询传感器集合列表，用于图标显示
+export const getSensorCollect = params => {
+    return callRemoteApi(`${base}/device/sensorcollect`, params, GET);
 }
 
 export const updateSensor = params => {

@@ -81,6 +81,7 @@ public class DeviceService {
 	 * @param device
 	 * @return PageInfo
 	 */
+	@Deprecated
 	public PageInfo<Device> getDeviceListPage(Page page, Device cond) {
 		PageHelper.startPage(page.getPageNum(), page.getPageSize());
 		if (!StringUtil.isNullOrEmpty(page.getOrderBy())) {
@@ -93,21 +94,19 @@ public class DeviceService {
 	}
 
 	/**
-	 * 分页获取传感器列表数据
+	 * 分页获取传感器集合列表数据
 	 * 
 	 * @param page
-	 * @param device
 	 * @return PageInfo
 	 */
-	public PageInfo<Sensor> getSensorChartPage(Page page, Sensor cond) {
+	public PageInfo<Sensor> getSensorCollectPage(Page page, Sensor cond) {
 		PageHelper.startPage(page.getPageNum(), page.getPageSize() * 3);
 		if (!StringUtil.isNullOrEmpty(page.getOrderBy())) {
 			PageHelper.orderBy(page.getOrderBy());
 		}
 
-		// 查询s_pid为空的数据
-		cond.setSpidEmpty("true");
-		List<Sensor> deviceList = deviceDao.getSensorDevList(cond);
+		// 查询传感器集合（s_pid为空或者s_pid=s_id的数据）
+		List<Sensor> deviceList = deviceDao.getSensorCollect(cond);
 		convertSensorList(deviceList);
 
 		PageInfo<Sensor> pageResult = new PageInfo<Sensor>(deviceList);
@@ -137,14 +136,14 @@ public class DeviceService {
 	 * @return List
 	 */
 	public List<Sensor> getSensorList(Sensor cond) {
-		List<Sensor> deviceList = deviceDao.getSensorDevList(cond);
+		List<Sensor> deviceList = deviceDao.getSensorDataList(cond);
 		convertSensorList(deviceList);
 
 		return deviceList;
 	}
 
 	/**
-	 * 分页获取传感器列表数据
+	 * 分页获取具体的传感器列表数据
 	 * 
 	 * @param page
 	 * @param device
@@ -156,9 +155,8 @@ public class DeviceService {
 			PageHelper.orderBy(page.getOrderBy());
 		}
 
-		// 查询s_pid不为空的数据
-		cond.setSpidEmpty("false");
-		List<Sensor> deviceList = deviceDao.getSensorDevList(cond);
+		// 查询具体的传感器数据（s_pid不为空的数据）
+		List<Sensor> deviceList = deviceDao.getSensorDataList(cond);
 		convertSensorList(deviceList);
 
 		PageInfo<Sensor> pageResult = new PageInfo<Sensor>(deviceList);
@@ -196,14 +194,14 @@ public class DeviceService {
 	public void refreshDeviceData() {
 		Random rand = new Random();
 
-		String[] cIdArr = { "101", "102", "103" };
+		String[] cIdArr = { "101", "102", "103", "104", "105" };
 		String cId = "r000000%s0001";
 
-		String[] sIdArr = { "001", "002", "003" };
+		String[] sIdArr = { "001", "002", "003", "004", "005" };
 
 		Sensor sensor = new Sensor();
-		sensor.setcId(String.format(cId, cIdArr[rand.nextInt(3)]));
-		sensor.setsId(sensor.getcId() + sIdArr[rand.nextInt(3)]);
+		sensor.setcId(String.format(cId, cIdArr[rand.nextInt(5)]));
+		sensor.setsId(sensor.getcId() + sIdArr[rand.nextInt(5)]);
 		sensor.setValue(rand.nextInt(150));
 
 		deviceDao.insertSensorData(sensor);
