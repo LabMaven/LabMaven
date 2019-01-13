@@ -101,15 +101,14 @@ CREATE TABLE `c_define` (
   `code_value_max` int(20) NOT NULL COMMENT '码值最大',
   `project_value_min` int(2) NOT NULL COMMENT '工程值最小',
   `project_value_max` int(2) NOT NULL COMMENT '工程值最大',
-  `offsett` int(20) NOT NULL COMMENT '偏移量',
+  `offset` int(20) NOT NULL COMMENT '偏移量',
   `unit_item` varchar(2) NOT NULL COMMENT '界面单位',
   `des` varchar(200) DEFAULT NULL COMMENT '描述',
-  `m_t_address` smallint(5) NOT NULL COMMENT 'modbus tcp寄存器地址',
+  `m_t_address` smallint(5) unsigned NOT NULL COMMENT 'modbus tcp寄存器地址',
   `m_t_length` tinyint(4) NOT NULL COMMENT 'modbus tcp长度',
   `m_t_collect` tinyint(1) DEFAULT NULL COMMENT 'modbus tcp是否采集该设备',
   `s_pid` varchar(20) NOT NULL COMMENT '传感器集合Id',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_c_define_m_t_address` (`m_t_address`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='控制器定义表';
 
 CREATE TABLE `e_list` (
@@ -132,11 +131,10 @@ CREATE TABLE `s_status` (
   `s_id` varchar(20) NOT NULL COMMENT '传感器Id',
   `lastupdatetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '最后状态更新时间',
   `s_flag` varchar(2) DEFAULT '-1' COMMENT '开关类传感器状态：-1 未使用,0 打开,1 关闭',
-  `m_t_address` smallint(5) NOT NULL COMMENT 'modbus tcp寄存器地址',
+  `m_t_address` smallint(5) unsigned NOT NULL COMMENT 'modbus tcp寄存器地址',
   `m_t_length` tinyint(4) NOT NULL COMMENT 'modbus tcp长度',
   `alarm_type` int(1) NOT NULL COMMENT '是否告警：0不告警，1告警',
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uk_s_status_m_t_address` (`m_t_address`)  
+  PRIMARY KEY (`id`) 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='开关量状态数据表';
 
 CREATE TABLE `e_data` (
