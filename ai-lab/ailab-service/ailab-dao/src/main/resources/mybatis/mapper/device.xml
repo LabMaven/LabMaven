@@ -2,15 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tide.ailab.dao.DeviceDao">
 
-    <select id="getSensorDevList" parameterType="Sensor" resultType="Sensor">
+    <select id="getSensorDataList" parameterType="Sensor" resultType="Sensor">
         select c.*, b.des bDes, f.des fDes, r.des rDes, e.value,
            (case when c.alarm_type = 1 then '是'
             when c.alarm_type = 0 then '否' else '' end) alarmTypeDes 
         from  b_define b, f_define f, r_define r, c_define c
         left join 
         (select tmp1.* from e_data tmp1,
-         (select max(id) id from e_data GROUP BY s_id) tmp2
-         where tmp1.id = tmp2.id
+         (select max(input_time) input_time,s_id from e_data GROUP BY s_id) tmp2
+          where tmp1.s_id=tmp2.s_id and tmp1.input_time = tmp2.input_time
         ) e
         on e.s_id = c.s_id
         where left(c.s_id, 10) = r.r_id
@@ -49,8 +49,10 @@
     </select>
     
     <select id="getChartData" parameterType="Sensor" resultType="Sensor">
-        select t.c_id, t.s_id, t.input_time, t.value from e_data t
-        where t.s_id = #{sId}
+        select c.c_id, t.s_id, t.input_time, t.value
+        from c_define c, e_data t
+        where c.s_id = t.s_id        
+        and t.s_id = #{sId}
         order by input_time desc
     </select>    
     
@@ -63,8 +65,8 @@
     </update>
     
     <insert id="insertSensorData" parameterType="Sensor">
-        insert into e_data(c_id, s_id, port_id, input_time, value)
-        values(#{cId}, #{sId}, 1, UTC_TIME(), #{value})
+        insert into e_data(s_id, input_time, value)
+        values(#{sId}, UTC_TIME(), #{value})
     </insert>
    
 </mapper>

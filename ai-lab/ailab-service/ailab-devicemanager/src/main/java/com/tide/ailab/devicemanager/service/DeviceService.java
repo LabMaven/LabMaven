@@ -189,7 +189,7 @@ public class DeviceService {
 		return map;
 	}
 
-	@Scheduled(initialDelay = 30000, fixedDelay = 10000)
+	//@Scheduled(initialDelay = 30000, fixedDelay = 10000)
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void refreshDeviceData() {
 		Random rand = new Random();
