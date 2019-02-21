@@ -55,6 +55,13 @@ module.exports = {
             pathRewrite: {
                '^/deviceMgr': ''
             }
+        },
+        '/alarmMgr': {
+            target: 'http://localhost:8088/ailab/',
+            changeOrigin: true,
+            pathRewrite: {
+                '^/alarmMgr': ''
+            }
         }
     },
     //${base}/user/login

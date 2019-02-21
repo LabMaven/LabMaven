@@ -17,7 +17,8 @@ import report from './views/report/report.vue'
 
 import hisChart from './views/report/hisChart.vue'
 
-import alarm from './views/alarm/alarm.vue'
+
+import alarmQry from './views/alarm/alarmQry.vue'
 
 
 let routes = [{
@@ -73,7 +74,7 @@ let routes = [{
         component: Home,
         name: '告警',
         children: [
-            { path: '/alarm',  component: alarm, name: '告警' }
+            { path: '/alarmQry', component: alarmQry, name: '告警查询' }
         ]
     },
     {
