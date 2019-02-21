@@ -1,0 +1,1 @@
+redis-server.exe --service-uninstall --service-name Redis6379

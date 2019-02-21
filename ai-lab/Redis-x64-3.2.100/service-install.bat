@@ -1,0 +1,1 @@
+redis-server.exe --service-install redis.windows-service.conf --service-name Redis6379
