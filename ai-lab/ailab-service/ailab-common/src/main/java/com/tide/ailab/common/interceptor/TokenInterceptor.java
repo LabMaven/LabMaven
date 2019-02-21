@@ -56,11 +56,11 @@ public class TokenInterceptor implements HandlerInterceptor {
         }
 
         // token为空或无效时，抛出异常，由前端捕获异常跳转至登录页面
-        if (!isValidToken) {
-            // token 校验失败，清空ThreadLocal中的userId
-            UserContextHolder.reset();
-            throw new DispatchUnauthException(DispatchExceptionCode.TOKEN_INVALID);
-        }
+//        if (!isValidToken) {
+//            // token 校验失败，清空ThreadLocal中的userId
+//            UserContextHolder.reset();
+//            throw new DispatchUnauthException(DispatchExceptionCode.TOKEN_INVALID);
+//        }
 
         return true; // 只有返回true才会继续向下执行，返回false取消当前请求
     }

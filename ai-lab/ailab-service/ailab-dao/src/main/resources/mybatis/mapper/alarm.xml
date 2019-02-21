@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tide.ailab.dao.AlarmDao">
+
+    <select id="getAlarmList" parameterType="Alarm" resultType="Alarm">
+        select t.* from sys_alarm_info t
+        <where>
+            <if test="cId!=null and cId!=''">c_id = #{cId}</if>
+            <if test="sId!=null and sId!=''">s_id = #{sId}</if>
+        </where>
+    </select>
+
+    <insert id="insertAlarm" parameterType="Alarm">
+        INSERT INTO sys_alarm_info (id,
+                                    alarm_type,
+                                    alarm_code,
+                                    c_id,
+                                    s_id,
+                                    alarm_info,
+                                    a_flag,
+                                    rollback_alarm_id,
+                                    entry_time,
+                                    rollback_time,
+                                    rollback_fag,
+                                    rollback_des)
+        VALUES (#{id},
+                #{alarm_type},
+                #{alarm_code},
+                #{c_id},
+                #{s_id},
+                #{alarm_info},
+                #{a_flag},
+                #{rollback_alarm_id},
+                #{entry_time},
+                #{rollback_time},
+                #{rollback_fag},
+                #{rollback_des})
+    </insert>
+
+</mapper>
