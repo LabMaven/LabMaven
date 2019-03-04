@@ -72,9 +72,11 @@ public class AlarmController {
      * @return
      */
     @ApiOperation(value = "更新告警信息", notes = "更新告警信息")
-    @RequestMapping(value = "/updateAlarm", method = RequestMethod.GET)
-    public void updateAlarm(Alarm alarm) {
+    @RequestMapping(value = "/updateAlarm", method = RequestMethod.POST)
+    public String updateAlarm(@RequestBody Alarm alarm) {
+        JsonResult res = new JsonResult(JsonResultType.SUCCESS);
         alarmService.updateAlarm(alarm);
+        return res.toJSON();
     }
 
     /**
