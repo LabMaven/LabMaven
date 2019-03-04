@@ -4,7 +4,7 @@
         <el-col :span="24" class="toolbar" style="padding-bottom: 0px;">
             <el-form :inline="true" :model="filters">
                 <el-form-item>
-                    <el-input v-model="filters.cId" placeholder="设备号" style="width:160px;"></el-input>
+                    <el-input  v-model="filters.cId" placeholder="设备号" style="width:160px;"></el-input>
                 </el-form-item>
                 <el-form-item>
                     <el-input v-model="filters.sId" placeholder="传感器号" style="width:160px;"></el-input>
@@ -40,6 +40,8 @@
                 <el-table-column prop="rollbackTime" label="告警恢复时间" width="140">
                 </el-table-column>
                 <el-table-column prop="rollbackFlag" label="告警恢复方式" width="140">
+                </el-table-column>
+                <el-table-column prop="rollbackDes" label="告警恢复原因" width="140">
                 </el-table-column>
                 <el-table-column label="操作" width="150">
                     <template scope="scope">
@@ -101,7 +103,7 @@
 
 <script>
 import {qryAlarmList} from '../../api/alarm'
-import {editAlarmDes} from '../../api/alarm'
+import {updateAlarm} from '../../api/alarm'
 
 export default {
   data () {
@@ -177,8 +179,9 @@ export default {
           this.editLoading = true
           // NProgress.start();
           let para = Object.assign({}, this.editForm)
-          delete para.createTime
-          editAlarmDes(para).then((res) => {
+          // delete para.rollbackDes
+              console.log(para);
+              updateAlarm(para).then((res) => {
             this.editLoading = false
             let { code, msg } = res
             // NProgress.done();

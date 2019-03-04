@@ -16,13 +16,17 @@
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
     "js-md5": "^0.7.3",
+    "net": "^1.0.2",
     "nprogress": "^0.2.0",
+    "sockjs-client": "^1.3.0",
+    "stompjs": "^2.3.3",
     "v-distpicker": "^1.0.17",
     "vue": "^2.2.2",
     "vue-amap": "^0.0.8",
     "vue-router": "^2.3.0",
+    "vue-stomp": "0.0.5",
     "vuetify": "^1.1.0",
-    "vuex": "^2.0.0-rc.6"
+    "vuex": "^2.5.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
