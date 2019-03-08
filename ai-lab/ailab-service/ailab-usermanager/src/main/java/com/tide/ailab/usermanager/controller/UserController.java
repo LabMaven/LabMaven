@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,12 +44,6 @@ public class UserController {
 
 	@Autowired
 	private UserService userService;
-
-	@Autowired
-	private ZSetOperations<String, Object> zSetOperations;
-
-	@Autowired
-	private ValueOperations<String, Object> valueOperations;
 
 	@Autowired
 	OssStorageService ossStorageService;
@@ -92,28 +84,29 @@ public class UserController {
 		JsonResult result = new JsonResult(JsonResultType.SUCCESS);
 		UserInfo currentUser = userService.getCurrentUser();
 
-		Set<Object> userTypeKeys = (Set<Object>) zSetOperations.rangeByScore(Consts.RedisKey.USER_TYPE_KEY, 0, 0);
+		List<DictInfo> userTypes = userService.getUserTypes();
 
-		for (Object key : userTypeKeys) {
-			DictInfo dict = (DictInfo) valueOperations.get(key);
-			// 当前登录用户为客户管理员或普通客户用户时，只加载普通用户类型
-			if (currentUser.getUserType() == Consts.UserType.NORMAL
-					|| currentUser.getUserType() == Consts.UserType.ACCOUNT) {
-				if (dict.getDictCode().intValue() == Consts.UserType.NORMAL) {
-					SelectOption option = new SelectOption();
-					option.setLabel(dict.getDictNote());
-					option.setValue(dict.getDictCode().toString());
-					userTypeList.add(option);
-					break;
-				}
-			} else {
-				// 登录用户为系统管理员时，加载客户管理员和客户普通用户类型
-				if (dict.getDictCode().intValue() == Consts.UserType.ACCOUNT
-						|| dict.getDictCode().intValue() == Consts.UserType.NORMAL) {
-					SelectOption option = new SelectOption();
-					option.setLabel(dict.getDictNote());
-					option.setValue(dict.getDictCode().toString());
-					userTypeList.add(option);
+		if (!CollectionUtils.isEmpty(userTypes)) {
+			for (DictInfo dict : userTypes) {
+				// 当前登录用户为客户管理员或普通客户用户时，只加载普通用户类型
+				if (currentUser.getUserType() == Consts.UserType.NORMAL
+						|| currentUser.getUserType() == Consts.UserType.ACCOUNT) {
+					if (dict.getDictCode().intValue() == Consts.UserType.NORMAL) {
+						SelectOption option = new SelectOption();
+						option.setLabel(dict.getDictNote());
+						option.setValue(dict.getDictCode().toString());
+						userTypeList.add(option);
+						break;
+					}
+				} else {
+					// 登录用户为系统管理员时，加载客户管理员和客户普通用户类型
+					if (dict.getDictCode().intValue() == Consts.UserType.ACCOUNT
+							|| dict.getDictCode().intValue() == Consts.UserType.NORMAL) {
+						SelectOption option = new SelectOption();
+						option.setLabel(dict.getDictNote());
+						option.setValue(dict.getDictCode().toString());
+						userTypeList.add(option);
+					}
 				}
 			}
 		}
@@ -129,16 +122,16 @@ public class UserController {
 	 */
 	@RequestMapping(value = "/getEmployeeType", method = RequestMethod.GET)
 	public String getEmployeeType() {
-		Set<Object> employeeTypeKeys = (Set<Object>) zSetOperations.rangeByScore(Consts.RedisKey.EMPLOYEE_TYPE_KEY, 0,
-				0);
-
 		List<SelectOption> employeeTypeList = new ArrayList<SelectOption>();
-		for (Object key : employeeTypeKeys) {
-			DictInfo dict = (DictInfo) valueOperations.get(key);
-			SelectOption option = new SelectOption();
-			option.setLabel(dict.getDictNote());
-			option.setValue(dict.getDictCode().toString());
-			employeeTypeList.add(option);
+
+		List<DictInfo> employeeTypes = userService.getEmployeeTypes();
+		if (!CollectionUtils.isEmpty(employeeTypes)) {
+			for (DictInfo dict : employeeTypes) {
+				SelectOption option = new SelectOption();
+				option.setLabel(dict.getDictNote());
+				option.setValue(dict.getDictCode().toString());
+				employeeTypeList.add(option);
+			}
 		}
 
 		JsonResult result = new JsonResult(JsonResultType.SUCCESS);

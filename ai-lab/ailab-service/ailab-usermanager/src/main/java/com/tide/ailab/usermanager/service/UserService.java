@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -12,17 +13,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.tide.ailab.common.context.UserInfoHandler;
+import com.tide.ailab.common.context.UserContextHolder;
 import com.tide.ailab.common.exception.DispatchException;
 import com.tide.ailab.common.exception.DispatchExceptionCode;
+import com.tide.ailab.common.log.Logger;
 import com.tide.ailab.common.model.Page;
 import com.tide.ailab.common.model.UserInfo;
 import com.tide.ailab.common.util.EncryptUtil;
 import com.tide.ailab.common.util.GuidUtil;
 import com.tide.ailab.common.util.SmsUtil;
 import com.tide.ailab.common.util.StringUtil;
+import com.tide.ailab.dao.DictDao;
 import com.tide.ailab.dao.UserDao;
 import com.tide.ailab.dao.UserRoleDao;
+import com.tide.ailab.model.DictInfo;
 import com.tide.ailab.model.User;
 import com.tide.ailab.model.UserRole;
 
@@ -42,7 +46,7 @@ public class UserService {
 	private UserRoleDao userRoleDao;
 
 	@Autowired
-	private UserInfoHandler userInfoHandler;
+	private DictDao dictDao;
 
 	/**
 	 * 新增用户，使用spring进行事物管理
@@ -158,7 +162,22 @@ public class UserService {
 	 * @return
 	 */
 	public UserInfo getCurrentUser() {
-		return userInfoHandler.getCurrentUser();
+		UserInfo userInfo = new UserInfo();
+		String userId = UserContextHolder.getUserId();
+
+		try {
+			if (!StringUtil.isNullOrEmpty(userId)) {
+				User cond = new User();
+				cond.setId(userId);
+				User user = userDao.getUserInfo(cond);
+
+				BeanUtils.copyProperties(userInfo, user);
+			}
+		} catch (Exception e) {
+			Logger.e("failed get current user.");
+		}
+
+		return userInfo;
 	}
 
 	/**
@@ -256,5 +275,13 @@ public class UserService {
 	 */
 	public void updatePwd(User user) {
 		userDao.updateUser(user);
+	}
+
+	public List<DictInfo> getUserTypes() {
+		return dictDao.getByColName("user_type");
+	}
+
+	public List<DictInfo> getEmployeeTypes() {
+		return dictDao.getByColName("employee_type");
 	}
 }

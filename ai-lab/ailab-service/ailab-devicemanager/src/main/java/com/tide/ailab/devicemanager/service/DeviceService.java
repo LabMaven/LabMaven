@@ -6,16 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.TimeZone;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.bson.Document;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -58,9 +53,6 @@ public class DeviceService {
 
 	@Autowired
 	private RoomDao roomDao;
-
-	@Autowired
-	private RedisTemplate<String, Object> redisTemplate;
 
 	@Autowired
 	private BuildingDao bDao;
@@ -189,7 +181,7 @@ public class DeviceService {
 		return map;
 	}
 
-	//@Scheduled(initialDelay = 30000, fixedDelay = 10000)
+	// @Scheduled(initialDelay = 30000, fixedDelay = 10000)
 	@Transactional(propagation = Propagation.REQUIRED)
 	public void refreshDeviceData() {
 		Random rand = new Random();
@@ -210,27 +202,6 @@ public class DeviceService {
 
 		Logger.d("refresh device data success.");
 
-	}
-
-	/**
-	 * 插入Device信息
-	 * 
-	 * @param device
-	 */
-	public void insertDevice(Device device) {
-		try {
-			ObjectId objectId = ObjectId.get();
-			Document devObj = new Document("_id", objectId);
-
-			Set<Object> props = redisTemplate.opsForSet().members("devicetype.mete.1");
-			for (Object key : props) {
-				String prop = (String) key;
-				devObj.put(prop, String.valueOf(getValue(device, prop)));
-			}
-			mgTemplate.getCurMonthDeviceTable().insertOne(devObj);
-		} catch (Exception e) {
-			Logger.e(e);
-		}
 	}
 
 	public Object getValue(Object dto, String name) throws Exception {

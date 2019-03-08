@@ -29,32 +29,4 @@ public class Consts {
 		public static final int NORMAL = 3; // 3：普通客户用户
 	}
 
-	/**
-	 * redis的key信息
-	 */
-	public static class RedisKey {
-
-		public static final String KEYS_SUF = "~keys"; // redis中索引集合的key的后缀
-
-
-		private static final String DEVICETYPE_REDIS = "devicetype"; // redis中设备类型信息的表名
-		public static final String DEVICETYPE_REDIS_PRE = DEVICETYPE_REDIS + ".id."; // 设备类型信息的key的前缀
-		public static final String DEVICETYPE_INDEX = DEVICETYPE_REDIS + KEYS_SUF; // 设备类型信息索引集合的key
-
-		private static final String FALUTTYPE_REDIS = "faulttype"; // redis中故障类型信息的表名
-		public static final String FALUTTYPE_REDIS_PRE = FALUTTYPE_REDIS + ".id."; // 故障类型信息的key的前缀
-		public static final String FALUTTYPE_INDEX = FALUTTYPE_REDIS + KEYS_SUF; // 故障类型信息索引集合的key
-
-		public static final String USERCOOR_REDIS_PRE = "usercoor.userid."; // 用户位置信息
-
-		private static final String PARAM_REDIS = "param"; // redis中配置信息的表名
-		public static final String PARAM_REDIS_PRE = PARAM_REDIS + ".accountid.name."; // 配置信息的key的前缀
-		public static final String PARAM_INDEX = PARAM_REDIS + KEYS_SUF; // 配置信息索引集合的key
-
-		public static final String USER_TYPE_KEY = "user_type~key";
-
-		public static final String EMPLOYEE_TYPE_KEY = "employee_type~key";
-		
-		public static final String ORDER_STATUS_KEY = "order_status~key";
-	}
 }
