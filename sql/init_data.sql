@@ -7,6 +7,9 @@ INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VAL
 INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (30000, '报表', 0, '/report', '', 1);
 INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (40000, '历史曲线', 0, '/hisChart', '', 1);
 INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (50000, '告警', 0, '/alarm', '', 1);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (60000, '用户', 0, '/', '', 1);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (60001, '用户管理', 60000, '/user', '', 1);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (60002, '角色管理', 60000, '/role', '', 1);
 
 truncate table t_cfg_rolemenu;
 INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 10000);
@@ -14,6 +17,7 @@ INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 20000);
 INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 30000);
 INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 40000);
 INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 50000);
+INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 60000);
 
 
 truncate table t_cfg_dict;
