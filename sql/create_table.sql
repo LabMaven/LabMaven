@@ -108,6 +108,8 @@ CREATE TABLE `c_define` (
   `m_t_length` tinyint(4) NOT NULL COMMENT 'modbus tcp长度',
   `m_t_collect` tinyint(1) DEFAULT NULL COMMENT 'modbus tcp是否采集该设备',
   `s_pid` varchar(20) NOT NULL COMMENT '传感器集合Id',
+  `readorwrite` int(2) NOT NULL DEFAULT 0 COMMENT '寄存器地址为只读或写入：0只读;1写入',
+  `configurable` int(2) NOT NULL DEFAULT 1 COMMENT '该寄存器是否可以从界面进行控制:0可以控制;1不可以控制',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='控制器定义表';
 
@@ -142,5 +144,44 @@ CREATE TABLE `e_data` (
   `input_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '上报时间',
   `value` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='控制器数据表';
+
+
+drop table if exists `c_ctl_info`;
+CREATE TABLE `c_ctl_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `c_code` varchar(20) DEFAULT NULL COMMENT '控制器code',
+  `c_id` varchar(20) NOT NULL COMMENT '控制器Id',
+  `s_code` varchar(20) DEFAULT NULL COMMENT '传感器code',
+  `s_id` varchar(20) NOT NULL COMMENT '传感器Id',
+  `v_type` int(2) NOT NULL COMMENT '下发值类型：0开关量；1模拟量；2一键强排',
+  `switch_flag` int(2) COMMENT '开关量：0打开，1关闭',
+  `s_value` int(2) COMMENT '工程值',
+  `s_status` int(2) COMMENT '一键强排：0打开，1关闭',
+  `rec_status` int(2) NOT NULl DEFAULT 0 COMMENT '记录下发状态：0未下发，1已经下发',
+  `re_crea_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+  `rec_upda_time` datetime DEFAULT NULL COMMENT '记录更新时间',
+  `o_id` varchar(100) NOT NULL COMMENT '管理员ID',  
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_cid_sid` (`c_id`, `s_id`),
+  KEY `idx_ctl_info_crea_time` (`re_crea_time`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='控制器控制信息表';
+
+drop table if exists `c_ctl_info_his`;
+CREATE TABLE `c_ctl_info_his` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `c_code` varchar(20) DEFAULT NULL COMMENT '控制器code',
+  `c_id` varchar(20) NOT NULL COMMENT '控制器Id',
+  `s_code` varchar(20) DEFAULT NULL COMMENT '传感器code',
+  `s_id` varchar(20) NOT NULL COMMENT '传感器Id',
+  `v_type` int(2) NOT NULL COMMENT '下发值类型：0开关量；1模拟量；2一键强排',
+  `switch_flag` int(2) COMMENT '开关量：0打开，1关闭',
+  `s_value` int(2) COMMENT '工程值',
+  `s_status` int(2) COMMENT '一键强排：0打开，1关闭',
+  `rec_status` int(2) NOT NULl DEFAULT 0 COMMENT '记录下发状态：0未下发，1已经下发',
+  `re_crea_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+  `rec_upda_time` datetime DEFAULT NULL COMMENT '记录更新时间',
+  `o_id` varchar(100) NOT NULL COMMENT '管理员ID',  
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='控制器控制信息历史表';
 
 
