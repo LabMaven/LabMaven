@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tide.ailab.dao.CtlInfoDao">
+
+    <insert id="insertCtlInfo" parameterType="CtlInfo">
+        INSERT IGNORE INTO c_ctl_info (c_id, s_id, v_type,
+            switch_flag, s_value, s_status, o_id)
+        VALUES (#{cId}, #{sId}, #{vType}, #{switchFlag},
+            #{sValue}, #{sStatus}, #{oId})
+    </insert>
+    
+    <insert id="batchAddCtlInfo" parameterType="java.util.List">
+        INSERT IGNORE INTO c_ctl_info (c_id, s_id, v_type,
+            switch_flag, s_value, s_status, o_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.cId}, #{item.sId}, #{item.vType}, #{item.switchFlag},
+             #{item.sValue}, #{item.sStatus}, #{item.oId})
+        </foreach>
+    </insert>
+    
+</mapper>

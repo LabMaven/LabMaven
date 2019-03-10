@@ -42,6 +42,16 @@ public class Sensor {
 
 	private String alarmTypeDes;
 
+	/**
+	 * 只读属性：0只读；1允许写入
+	 */
+	private int readOrWrite;
+
+	/**
+	 * 是否支持可配置：0支持；1不支持
+	 */
+	private int configurable;
+
 	public String getbDes() {
 		return bDes;
 	}
@@ -168,6 +178,22 @@ public class Sensor {
 
 	public void setAlarmTypeDes(String alarmTypeDes) {
 		this.alarmTypeDes = alarmTypeDes;
+	}
+
+	public int getReadOrWrite() {
+		return readOrWrite;
+	}
+
+	public void setReadOrWrite(int readOrWrite) {
+		this.readOrWrite = readOrWrite;
+	}
+
+	public int getConfigurable() {
+		return configurable;
+	}
+
+	public void setConfigurable(int configurable) {
+		this.configurable = configurable;
 	}
 
 }

@@ -62,16 +62,72 @@
             <el-tag style="float:right;margin:3px;">总数:10</el-tag>
             -->
         </el-col>
+
+        <el-col>
+        <div id="allExhaust" style="display:none">
+            一键强排:
+            <el-button type="primary" size="small" v-on:click="allExhaust(0)">全部打开</el-button>
+            <el-button type="primary" size="small" v-on:click="allExhaust(1)">全部关闭</el-button>
+            <br/>
+        </div>
+        </el-col>
         
         <el-col id="room2">
-            <div v-for="(item, index) in deviceList" :class="item.classType"  @click="addTab(item)">
-                <p style="padding-left:100px;" :id="'p_' + item.sId">
-                   {{item.fDes}}<br/>
-                   {{item.rDes}}<br/>
-                   {{item.des}}<br/>
-                </p>                
+            <div v-for="(item, index) in deviceList" class="sensor_div">
+                <div :class="item.classType" @click="addTab(item)"></div>
+                <div class="sensor_info">
+                    <span :id="'p_' + item.sId">
+                        {{item.fDes}}<br/>
+                        {{item.rDes}}<br/>
+                        {{item.des}}<br/>
+                        <!--压差和余风量为模拟量-->
+                        <el-button size="small" v-if="(item.sType == 1 || item.sType == 10) 
+                            && item.configurable == 0"
+                            v-on:click="openEditForm(item)">修改</el-button>
+
+                        <!--人员工作状态 为开关量 -->
+                        <el-button type="small" v-if="item.sType == 7 && item.configurable == 0"
+                            v-on:click="chgSwitchInfo(item, 0)">打开</el-button>
+                        <el-button type="small" v-if="item.sType == 7 && item.configurable == 0"
+                            v-on:click="chgSwitchInfo(item, 1)">关闭</el-button>
+
+                        <!-- 通风柜 -->
+                        <span v-if="item.sType == 5 && item.configurable == 0">一键强排:</span>
+                        <el-button type="mini" v-if="item.sType == 5 && item.configurable == 0"
+                            v-on:click="exhaust(item, 0)">打开</el-button>
+                        <el-button style="margin-left:0px;" type="mini" 
+                            v-if="item.sType == 5 && item.configurable == 0"
+                            v-on:click="exhaust(item, 1)">关闭</el-button>
+                    </span>
+                </div>          
             </div>
         </el-col>
+
+        <!--编辑界面-->
+        <el-dialog title="编辑" v-model="editFormVisible" :close-on-click-modal="false">
+            <el-form :model="editForm" label-width="120px" :rules="editFormRules" ref="editForm">
+                <el-form-item label="下发值类型" prop="vType" v-show="false">
+                    <el-input v-model="editForm.vType" auto-complete="off" value="1"
+                        style="width:80%;"></el-input>
+                </el-form-item>
+                <el-form-item label="控制器ID" prop="cId">
+                    <el-input v-model="editForm.cId" auto-complete="off" readonly
+                        style="width:80%;"></el-input>
+                </el-form-item>
+                <el-form-item label="传感器ID" prop="sId">
+                    <el-input v-model="editForm.sId" auto-complete="off" readonly
+                        style="width:80%;"></el-input>
+                </el-form-item>
+                <el-form-item label="工程值" prop="sValue">                    
+                    <el-input v-model="editForm.sValue" auto-complete="off"
+                        style="width:80%;"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click.native="editFormSubmit" :loading="editLoading">提交</el-button>
+                <el-button @click.native="editFormVisible = false">取消</el-button>                
+            </div>
+        </el-dialog>
 
         <el-col :span="24" class="toolbar">
             <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageObj.curPage" :page-sizes="[10, 20, 50, 100]" :page-size="pageObj.pageSize" :total="pageObj.total" layout="total, sizes, prev, pager, next, jumper" style="float:right;">
@@ -103,7 +159,7 @@
 </template>
 
 <script>
-import { getRooms, getSensors, getDeviceTree, getSensorCollect, getChartData} from '../../api/device';
+import { getRooms, getSensors, getDeviceTree, getSensorCollect, getChartData, addCtlInfo, batchAddCtlInfo} from '../../api/device';
 
 let echarts = require('echarts');
 
@@ -158,7 +214,21 @@ export default {
             chartTabs: [],
             tabIndex: 0,
             firstTimer: null,
-            echartsTimer: null
+            echartsTimer: null,
+
+            editFormVisible: false,//编辑界面是否显示
+            editLoading: false,
+            editFormRules: {
+                sValue: [
+                    { required: true, message: '请输入工程值', trigger: 'blur' }
+                ],
+            },
+            editForm: {
+                vType: 1,
+                cId: '',
+                sId: '',
+                sValue: ''
+            }   
         }
     },
     watch: {
@@ -191,7 +261,7 @@ export default {
             }
 
             if(data.level == 3 || data.level == 4) {
-            this.filters.sType = "";
+               this.filters.sType = "";
                this.getSensorCollect();
             }            
         },
@@ -338,9 +408,18 @@ export default {
             let param = Object.assign({}, this.filters, this.pageObj);
             
             //this.firstTimer = setInterval(() => {
+
+            document.getElementById("allExhaust").style.display='none';
+
                 getSensorCollect(param).then(res => {
                     let { msg, code, data } = res;
                     this.deviceList = data.list;
+
+                    this.deviceList.forEach(function(item) {
+                        if (item.sType == 5 && item.configurable == 0) {
+                            document.getElementById('allExhaust').style.display='block';
+                        }
+                    });
 
                     this.pageObj.pageNum = data.pageNum;
                     this.pageObj.total = data.total;
@@ -359,6 +438,108 @@ export default {
                 this.models = res.data;
             });
         },
+
+        exhaust (data, sStatus) {
+            let params = {'cId':data.cId, 'sId':data.sId, vType: 2, 'sStatus':sStatus };
+            let msg = sStatus == 0 ? '打开' : '关闭';
+            this.$confirm('确认'+msg+'一键强排吗？', '提示',
+              {cancelButtonClass:'znv-flow-right'}).then(() => {        
+                addCtlInfo(params).then((res) => {
+                    if (res.code !== 0) {
+                        this.$message({
+                            message: res.msg == undefined || res.msg== null || res.msg == '' ?
+                                msg + '一键强排失败' : res.msg,
+                            type: 'error'
+                        });
+                    } else {
+                        this.$message({
+                            message: msg + '一键强排成功',
+                            type: 'success'
+                        });
+                    }
+                });
+            });
+        },
+
+        allExhaust (sStatus) {
+            if (this.filters.rId == undefined || this.filters.rId == '') {
+               this.$message({message: '请选择房间', type : 'error'});
+               return;
+            }
+            let params = {'rId':this.filters.rId, vType: 2, 'sStatus':sStatus };
+            let msg = sStatus == 0 ? '全部打开' : '全部关闭';
+            this.$confirm('确认'+msg+'一键强排吗？', '提示',
+              {cancelButtonClass:'znv-flow-right'}).then(() => {        
+                batchAddCtlInfo(params).then((res) => {
+                    if (res.code !== 0) {
+                        this.$message({
+                            message: res.msg == undefined || res.msg== null || res.msg == '' ?
+                                msg + '一键强排失败' : res.msg,
+                            type: 'error'
+                        });
+                    } else {
+                        this.$message({
+                            message: msg + '一键强排成功，总共' + res.totalCount 
+                              + '个，成功'+ res.addCount + '个。',
+                            type: 'success'
+                        });
+                    }
+                });
+            });
+        },
+
+        chgSwitchInfo (data, switchFlag) {
+            let params = {'cId':data.cId, 'sId':data.sId, vType: 0, 'switchFlag':switchFlag };
+            let msg = switchFlag == 0 ? '打开' : '关闭';
+            this.$confirm('确认'+msg+'开关吗？', '提示', {cancelButtonClass:'znv-flow-right'}).then(() => {        
+                addCtlInfo(params).then((res) => {
+                    if (res.code !== 0) {
+                        this.$message({
+                            message: res.msg == undefined || res.msg== null || res.msg == '' ?
+                                msg + '开关失败' : res.msg,
+                            type: 'error'
+                        });
+                    } else {
+                        this.$message({
+                            message: msg + '开关成功',
+                            type: 'success'
+                        });
+                    }
+                });
+            });
+        },
+        openEditForm: function (data) {            
+            this.editFormVisible = true;
+            this.editForm = {'cId':data.cId, 'sId':data.sId, vType: 1 }; 
+        },
+        editFormSubmit: function () {
+            this.$refs.editForm.validate((valid) => {
+                if (valid) {
+                    this.editLoading = true;
+                    let params = Object.assign({}, this.editForm); 
+                    console.log(params);                         
+                    addCtlInfo(params).then((res) => {
+                        this.editLoading = false;
+                        if (res.code !== 0) {
+                            this.$message({
+                                message: res.msg == undefined || res.msg== null || res.msg == '' ?
+                                    '修改工程值失败' : res.msg,
+                                type: 'error'
+                            });
+                        } else {
+                            this.$message({
+                                message: '修改工程值成功',
+                                type: 'success'
+                            });
+                        }
+                        this.$refs['editForm'].resetFields();
+                        this.editFormVisible = false;
+                        this.getDevices();
+                    });
+                }
+            });
+        },
+
         // 每页数量改变
         handleSizeChange(val) {
             this.pageObj.pageSize = val;
@@ -397,107 +578,117 @@ export default {
 
 
 <style>
+.sensor_div {
+    width:33%;
+    height:100px;
+    float:left;
+}
+.sensor_info {
+    width:50%;
+    height:100px;
+    float:right;
+}
 .pressure_Normal {
     background: url('~@/assets/sensor/pressure_sensor_normal.png') no-repeat;
-    width:33%;
-    height: 100px;
+    width:50%;
+    height:100px;
     float:left;
 }
 
 .temperature_Normal {
     background: url('~@/assets/sensor/temperature_sensor_normal.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .tempAndHum_Normal {
     background: url('~@/assets/sensor/temperature_humidity_normal.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .ventilator_Normal {
     background: url('~@/assets/sensor/ventilator_normal.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .workState_Normal {
     background: url('~@/assets/sensor/work_state_normal.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .airSpeed_Normal {
     background: url('~@/assets/sensor/air_speed_normal.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .airVolumn_Normal {
     background: url('~@/assets/sensor/air_volumn_normal.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .flygate_Normal {
     background: url('~@/assets/sensor/flygate_normal.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .unknown_Normal {
     background: url('~@/assets/sensor/default_sensor_normal.png') no-repeat;
-    width:33%;
+    width:16%;
     height: 100px;
     float:left;
 }
 
 .pressure_Alarm {
     background: url('~@/assets/sensor/pressure_sensor_alarm.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .temperature_Alarm {
     background: url('~@/assets/sensor/temperature_sensor_alarm.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .tempAndHum_Alarm {
     background: url('~@/assets/sensor/temperature_humidity_alarm.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .ventilator_Alarm {
     background: url('~@/assets/sensor/ventilator_alarm.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .workState_Alarm {
     background: url('~@/assets/sensor/work_state_alarm.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .airSpeed_Alarm {
     background: url('~@/assets/sensor/air_speed_alarm.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
@@ -505,21 +696,21 @@ export default {
 
 .airVolumn_Alarm {
     background: url('~@/assets/sensor/air_volumn_alarm.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .flygate_Alarm {
     background: url('~@/assets/sensor/flygate_alarm.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }
 
 .unknown_Alarm {
     background: url('~@/assets/sensor/default_sensor_normal.png') no-repeat;
-    width:33%;
+    width:50%;
     height: 100px;
     float:left;
 }

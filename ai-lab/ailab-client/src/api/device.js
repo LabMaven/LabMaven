@@ -35,5 +35,10 @@ export const getChartData = params => {
 	return callRemoteApi(`${base}/device/getChartData`, params, GET);
 }
 
+export const addCtlInfo = params => {
+	return callRemoteApi(`${base}/ctl/add`, params, POST);
+}
 
-
+export const batchAddCtlInfo = params => {
+	return callRemoteApi(`${base}/ctl/batchadd`, params, POST);
+}

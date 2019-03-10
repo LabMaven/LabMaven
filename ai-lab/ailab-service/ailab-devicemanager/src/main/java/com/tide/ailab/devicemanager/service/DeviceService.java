@@ -110,6 +110,10 @@ public class DeviceService {
 		return pageResult;
 	}
 
+	public List<Sensor> getSensorCollect(Sensor cond) {
+		return deviceDao.getSensorCollect(cond);
+	}
+
 	/**
 	 * 获取房间列表数据
 	 * 
