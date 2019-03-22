@@ -198,6 +198,7 @@ export default {
             rooms: [],
             sensors: [],
             subSensorList: [],
+            subChartList: [],
             // 分页对象
             pageObj: {
                 pageNum: 1, // 页码
@@ -228,7 +229,7 @@ export default {
                 cId: '',
                 sId: '',
                 sValue: ''
-            }   
+            },            
         }
     },
     watch: {
@@ -294,17 +295,21 @@ export default {
             getSensors(param).then(res => {
                 let { msg, code, data } = res;
                 this.subSensorList = data;
+            });
 
-                this.subSensorList.forEach(function(item){
+            let params = Object.assign({"sPid" : sId}, {"pageSize": 30});
+            getChartData(params).then(res => {
+                this.subChartList = res.data;
+                this.subChartList.forEach(function(item){
+                console.log('sid'+item.sid);
                     /*ECharts图表*/
                     var timer = setInterval(() => {
                         var sIdDiv = 'main_' + item.sId;
                         var mainDiv = document.getElementById(sIdDiv);
-                        if (mainDiv) {                           
-                            var myChart = echarts.init(mainDiv);
+                        if (mainDiv) {
                             var option = {
                                 title : {
-                                    text : item.des+'采集数据趋势图'
+                                    text : item.des + '采集数据趋势图'
                                 },
                                 tooltip : {
                                     trigger : 'axis'
@@ -329,38 +334,16 @@ export default {
                                     data: ''
                                 }]
                             };
-                        
-                            //var xData = new Array();
-                            //var yData = new Array();
+                                                 
+                            var myChart = echarts.init(mainDiv);
+                            option.xAxis.data = item.xData;
+                            option.series[0].data = item.yData;
 
-                            let param = Object.assign({"sId" : sId}, {"pageSize": 30});
-                            getChartData(param).then(res => {
-                                option.xAxis.data = res.xData;
-                                option.series[0].data = res.yData;
-
-                                myChart.setOption(option); 
-                                clearInterval(timer);
-                            });
-                            
-                       
-                    /*        data.echartsTimer = setInterval(() => {
-                                let tabs = data.chartTabs;
-                                let activeName = data.chartTabsValue;
-                                //console.log("activeName:" + activeName);
-                                tabs.forEach((tab, index) => {
-                                    if (tab.name == activeName) {
-                                        let param = Object.assign({"sId" : tab.sId}, {"pageSize": 30});
-                                        getChartData(param).then(res => {
-                                            option.xAxis.data = res.xData;
-                                            option.series[0].data = res.yData;
-
-                                            myChart.setOption(option);                       
-                                        });
-                                    }
-                                });    
-                            }, 30000);*/
+                            myChart.setOption(option); 
+                            clearInterval(timer);
                         }
-                    } , 1000);
+
+                    }, 1000);
                 });
 
             });

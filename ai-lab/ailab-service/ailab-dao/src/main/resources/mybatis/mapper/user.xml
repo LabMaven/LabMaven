@@ -21,19 +21,15 @@
     </select>
 
     <select id="getUserList" parameterType="User" resultType="User">
-        select tmp1.*, tmp1.customerName, tmp2.roleIds 
-        from 
-        (select u.*, c.name customerName from t_cfg_user u
-          left join t_cfg_customer c on u.customer_id = c.id) tmp1,
+        select u.*, tmp.roleIds 
+        from t_cfg_user u,
         (select GROUP_CONCAT(ur.role_id) roleIds, u1.id user_id from t_cfg_user u1
-           left join t_cfg_userrole ur on u1.id = ur.user_id GROUP BY u1.id) tmp2
+           left join t_cfg_userrole ur on u1.id = ur.user_id GROUP BY u1.id) tmp
         <where>
-            tmp1.id = tmp2.user_id
+            u.id = tmp.user_id
             <if test="userName!=null and userName!=''">and u.user_name like '%${userName}%'</if>
             <if test="trueName !=null and trueName!=''">and u.true_name like '%${trueName}%'</if>
             <if test="phone != null and phone != ''">and u.phone like '%${phone}%'</if>
-            <if test="customerId!= null and customerId !=''">and u.customer_id = #{customerId}</if>
-            <if test="customerName!= null and customerName !=''">and c.name like '%${customerName}%'</if>
         </where>
     </select>
 
@@ -42,7 +38,6 @@
         select count(1) from t_cfg_user
         <where>
             <if test="id!=null and id!=''">id = #{id}</if>
-            <if test="customerId != null and customerId !=''">and customer_id = #{customerId}</if>
             <if test="userName!=null and userName!=''">and user_name = #{userName}</if>
         </where>
     </select>

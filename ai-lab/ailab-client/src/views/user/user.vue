@@ -24,18 +24,18 @@
         <!--列表-->
         <template>
             <el-table :data="users" highlight-current-row v-loading="listLoading" style="width: 100%;">
-                <el-table-column prop="userName" label="用户名" width="160" sortable>
+                <el-table-column prop="userName" label="用户名" width="180" sortable>
                 </el-table-column>
-                <el-table-column prop="trueName" label="姓名" width="160" sortable>
+                <el-table-column prop="trueName" label="姓名" width="220" sortable>
                 </el-table-column>
-                <el-table-column prop="customerName" label="所属客户" min-width="140">
+                <el-table-column prop="phone" label="手机号码" width="200">
                 </el-table-column>
-                <el-table-column prop="phone" label="手机号码" width="140">
+                <el-table-column prop="email" label="邮箱" min-width="140">
                 </el-table-column>
-                <el-table-column label="操作" width="150">            
+                <el-table-column label="操作" width="160">            
                     <template scope="scope">
-                        <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                        <el-button type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
+                        <el-button v-if="scope.row.userName != 'admin'" size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                        <el-button v-if="scope.row.userName != 'admin'" type="danger" size="small" @click="handleDel(scope.$index, scope.row)">删除</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -65,6 +65,7 @@
                     <el-input v-model="editForm.phone" auto-complete="off" :maxlength="20" style="width:190px;">
                     </el-input>
                 </el-form-item>
+                <!--
                 <el-form-item label="所属客户" prop="customerId">
                     <el-select v-model="editForm.customerId" placeholder="请选择" style="width:190px;">
                         <el-option v-for="item in customers" :key="item.value" :label="item.label"
@@ -79,6 +80,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
+                -->
                 <el-form-item label="角色" prop="roleIds">
                     <div style="height:120px;width:190px;overflow:auto">
                     <el-tree :data="roleIds" show-checkbox node-key="id" height="150px" width="170px"
@@ -112,6 +114,7 @@
                     <el-input v-model="addForm.phone" auto-complete="off" :maxlength="20" style="width:190px;">
                     </el-input>
                 </el-form-item>
+                <!--
                 <el-form-item label="所属客户" prop="customerId">
                     <el-select v-model="addForm.customerId" placeholder="请选择" style="width:190px;">
                         <el-option v-for="item in customers" :key="item.value" :label="item.label"
@@ -126,6 +129,7 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
+                -->
                 <el-form-item label="角色" prop="roleIds">
                     <div style="height:120px;width:190px;overflow:auto">
                     <el-tree :data="roleIds" show-checkbox node-key="id" height="150px" width="170px"

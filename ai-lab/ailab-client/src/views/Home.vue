@@ -1,10 +1,10 @@
 <template>
     <el-row class="container">
-        <el-col :span="30" class="header">
-            <el-col :span="10" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
+        <el-col :span="24" class="header">
+            <el-col :span="6" class="logo" :class="collapsed?'logo-collapse-width':'logo-width'">
                 {{collapsed?'':sysName}}
             </el-col>
-            <el-col :span="10">
+            <el-col :span="12">
                 <aside :class="collapsed?'menu-collapsed':'menu-expanded'">
                     <el-menu :default-active="$route.path" class="el-menu-demo" mode="horizontal" id="menuA"
                              @open="handleopen" @close="handleclose" @select="handleselect" unique-opened router
@@ -55,14 +55,14 @@
                     </ul>
                 </aside>
             </el-col>
-            <el-col :span="6">
+            <el-col :span="3">
                 <ul>
                     <el-tag type="danger" style="float:right;margin:4px;">告警:{{alarmNum}}</el-tag>
                     <!--<el-tag style="float:right;margin:3px;">正常:5</el-tag>-->
                     <!--<el-tag style="float:right;margin:3px;">总数:10</el-tag>-->
                 </ul>
             </el-col>
-            <el-col :span="4" class="userinfo">
+            <el-col :span="3" class="userinfo">
                 <el-dropdown trigger="hover">
                     <span class="el-dropdown-link userinfo-inner"><img :src="sysUserAvatar"/> {{sysUserName}}</span>
                     <el-dropdown-menu slot="dropdown">

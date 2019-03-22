@@ -41,6 +41,10 @@ public class Role {
 	 */
 	private String menuIds;
 
+	private int editable;
+
+	private int deletable;
+
 	public String getId() {
 		return id;
 	}
@@ -87,6 +91,22 @@ public class Role {
 
 	public void setMenuIds(String menuIds) {
 		this.menuIds = menuIds;
+	}
+
+	public int getEditable() {
+		return editable;
+	}
+
+	public void setEditable(int editable) {
+		this.editable = editable;
+	}
+
+	public int getDeletable() {
+		return deletable;
+	}
+
+	public void setDeletable(int deletable) {
+		this.deletable = deletable;
 	}
 
 	@Override

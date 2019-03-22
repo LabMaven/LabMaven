@@ -21,7 +21,7 @@ public class User implements Serializable {
 	/**
 	 * 所属客户id
 	 */
-	private String customerId;
+	private String customerId = "0000";
 
 	private String customerName;
 

@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -77,7 +77,19 @@ public class DeviceController {
 	public String getSensorList(Sensor sensor) {
 		JsonResult result = new JsonResult(JsonResultType.SUCCESS);
 		List<Sensor> sensorList = deviceService.getSensorList(sensor);
+
+		// 是否允许显示全部一键强排
+		boolean allExhaustVisable = false;
+		if (CollectionUtils.isNotEmpty(sensorList)) {
+			for (Sensor s : sensorList) {
+				if ("5".equals(s.getsType()) && s.getConfigurable() == 0) {
+					allExhaustVisable = true;
+					break;
+				}
+			}
+		}
 		result.add("data", sensorList);
+		result.add("allExhaustVisable", allExhaustVisable);
 		return result.toJSON();
 	}
 
@@ -111,12 +123,10 @@ public class DeviceController {
 	 * @return
 	 */
 	@RequestMapping(value = "/getChartData", method = RequestMethod.GET)
-	public String getChartData(Page page, Sensor sensor, HttpServletResponse response) {
+	public String getChartData(Page page, Sensor sensor) {
 		JsonResult result = new JsonResult(JsonResultType.SUCCESS);
-		Map<String, List<String>> map = deviceService.getChartData(page, sensor);
-		result.add("xData", map.get("xData"));
-		result.add("yData", map.get("yData"));
-
+		List<Map<String, Object>> data = deviceService.getChartData(page, sensor);
+		result.add("data", data);
 		return result.toJSON();
 	}
 
@@ -131,6 +141,25 @@ public class DeviceController {
 		JsonResult result = new JsonResult(JsonResultType.SUCCESS);
 		List<TreeNode> nodeList = deviceService.getDeviceTree(bId);
 		result.add("data", nodeList);
+		return result.toJSON();
+	}
+
+	/**
+	 * 分页查询传感器列表
+	 * 
+	 * @param page
+	 * @param sensor
+	 * @return
+	 */
+	@RequestMapping(value = "/countsensor", method = RequestMethod.GET)
+	public String countSensor() {
+		JsonResult result = new JsonResult(JsonResultType.SUCCESS);
+		Map<String, Object> resultMap = deviceService.countSensor();
+		result.add("total", resultMap.get("total") != null ? resultMap.get("total") : 0);
+		result.add("abnormalCount", resultMap.get("abnormalCount") != null ? resultMap.get("abnormalCount") : 0);
+		result.add("fanTotal", resultMap.get("fanTotal") != null ? resultMap.get("fanTotal") : 0);
+		result.add("fanAbnormalCount",
+				resultMap.get("fanAbnormalCount") != null ? resultMap.get("fanAbnormalCount") : 0);
 		return result.toJSON();
 	}
 

@@ -163,6 +163,24 @@ public class DeviceService {
 		deviceDao.updateSensor(sensor);
 	}
 
+	public Map<String, Object> countSensor() {
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("qryNormal", "true"); // 统计普通设备个数
+		Map<String, Object> countMap1 = deviceDao.countDeviceData(param);
+		resultMap.put("total", countMap1.get("total"));
+		resultMap.put("abnormalCount", countMap1.get("abnormalCount"));
+
+		param.clear();
+		param.put("qryFan", "true"); // 统计风机盘管设备个数
+		Map<String, Object> countMap2 = deviceDao.countDeviceData(param);
+		resultMap.put("fanTotal", countMap2.get("total"));
+		resultMap.put("fanAbnormalCount", countMap2.get("abnormalCount"));
+
+		return resultMap;
+	}
+
 	/**
 	 * 分页获取传感器列表数据
 	 * 
@@ -170,19 +188,33 @@ public class DeviceService {
 	 * @param cond
 	 * @return
 	 */
-	public Map<String, List<String>> getChartData(Page page, Sensor cond) {
-		PageHelper.startPage(page.getPageNum(), page.getPageSize());
-		if (!StringUtil.isNullOrEmpty(page.getOrderBy())) {
-			PageHelper.orderBy(page.getOrderBy());
+	public List<Map<String, Object>> getChartData(Page page, Sensor cond) {
+		List<Sensor> sensorList = new ArrayList<Sensor>();
+		if (!StringUtil.isNullOrEmpty(cond.getsPid())) {
+			sensorList = deviceDao.getSubSensors(cond.getsPid());
+		} else if (!StringUtil.isNullOrEmpty(cond.getsId())) {
+			sensorList.add(cond);
 		}
 
-		List<Sensor> dataList = deviceDao.getChartData(cond);
-		PageInfo<Sensor> pageResult = new PageInfo<Sensor>(dataList);
+		List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+		if (CollectionUtils.isNotEmpty(sensorList)) {
+			for (Sensor sensor : sensorList) {
+				Map<String, Object> param = new HashMap<String, Object>();
+				param.put("sId", sensor.getsId());
+				param.put("start", page.getPageNum() * page.getPageSize());
+				param.put("size", page.getPageSize());
+				List<Sensor> dataList = deviceDao.getChartData(param);
 
-		Map<String, List<String>> map = new HashMap<String, List<String>>();
+				Map<String, Object> map = new HashMap<String, Object>();
+				map.put("sId", sensor.getsId());
+				map.put("des", sensor.getDes());
+				convertChartData(dataList, map);
 
-		convertChartData(pageResult.getList(), map);
-		return map;
+				list.add(map);
+			}
+		}
+
+		return list;
 	}
 
 	// @Scheduled(initialDelay = 30000, fixedDelay = 10000)
@@ -307,7 +339,7 @@ public class DeviceService {
 		}
 	}
 
-	private void convertChartData(List<Sensor> dataList, Map<String, List<String>> map) {
+	private void convertChartData(List<Sensor> dataList, Map<String, Object> map) {
 		List<String> xList = new ArrayList<String>();
 		List<String> yList = new ArrayList<String>();
 
@@ -317,7 +349,6 @@ public class DeviceService {
 				Sensor sensor = dataList.get(i);
 				xList.add(DateTimeUtil.format(DateTimeUtil.getLocalDate(sensor.getInputTime(), TimeZone.getDefault())));
 				yList.add(String.valueOf(sensor.getValue()));
-
 			}
 		}
 

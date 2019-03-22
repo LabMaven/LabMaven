@@ -42,3 +42,7 @@ export const addCtlInfo = params => {
 export const batchAddCtlInfo = params => {
 	return callRemoteApi(`${base}/ctl/batchadd`, params, POST);
 }
+
+export const countSensor = params => {
+	return callRemoteApi(`${base}/device/countsensor`, params, GET);
+}
