@@ -21,6 +21,8 @@ CREATE TABLE `t_cfg_role` (
   `id` varchar(40) NOT NULL COMMENT '角色id',
   `name` varchar(40) NOT NULL COMMENT '角色名称',
   `description` varchar(50) DEFAULT NULL COMMENT '角色描述',
+  `editable` tinyint(2) NOT NULL DEFAULT 1 COMMENT '是否可编辑:1编辑，0不可编辑',
+  `deletable` tinyint(2) NOT NULL DEFAULT 1 COMMENT '是否可删除:1可删除，0不可删除',
   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UK_role_name` (`name`)

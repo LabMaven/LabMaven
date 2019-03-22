@@ -1,15 +1,24 @@
 INSERT INTO t_cfg_user(id, customer_id, user_name, password, true_name, phone, user_type)
 values('b7d0a1cff9e511e7bf401866daf21a53','0000', 'admin', '21218cca77804d2ba1922c33e0151105', '超级管理员', '0000', 1);
 
+INSERT INTO `t_cfg_role`(`id`, `name`, `description`, `editable`, `deletable`)
+ VALUES ('0093f579f9e711e7bf401866daf21a53','超级管理员角色','超级管理员角色', 0, 0);
+ 
+ insert into t_cfg_userrole values('b7d0a1cff9e511e7bf401866daf21a53', '0093f579f9e711e7bf401866daf21a53');
 
-INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (10000, '设备', 0, '/deviceQry', '', 1);
-INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (20000, '风机盘管', 0, '/fanCoiler', '', 1);
-INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (30000, '报表', 0, '/report', '', 1);
-INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (40000, '历史曲线', 0, '/hisChart', '', 1);
-INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (50000, '告警', 0, '/alarm', '', 1);
-INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (60000, '用户', 0, '/', '', 1);
-INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (60001, '用户管理', 60000, '/user', '', 1);
-INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (60002, '角色管理', 60000, '/role', '', 1);
+truncate table t_cfg_menu;
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (10000, '工作台', 0, '/desk', '', 1);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (20000, '设备', 0, '/', '', 2);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (20001, '设备查询', 20000, '/deviceQry', NULL, 1);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (20002, '设备配置管理', 20000, '/deviceCfg', NULL, 2);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (30000, '风机盘管', 0, '/fanCoiler', '', 3);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (40000, '报表', 0, '/report', NULL, 4);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (50000, '历史曲线', 0, '/hisChart', NULL, 5);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (60000, '告警', 0, '/alarm', NULL, 6);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (70000, '用户', 0, '/', '', 7);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (70001, '用户管理', 70000, '/user', '', 1);
+INSERT INTO `t_cfg_menu` (`id`, `name`, `parent_id`, `url`, `style`, `sort`) VALUES (70002, '角色管理', 70000, '/role', '', 2);
+
 
 truncate table t_cfg_rolemenu;
 INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 10000);
@@ -18,6 +27,7 @@ INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 30000);
 INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 40000);
 INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 50000);
 INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 60000);
+INSERT INTO `t_cfg_rolemenu` VALUES ('0093f579f9e711e7bf401866daf21a53', 70000);
 
 
 truncate table t_cfg_dict;
