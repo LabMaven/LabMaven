@@ -45,43 +45,15 @@
                     <el-button v-on:click="getSensorList(18)">电动风阀执行器</el-button>
                 </el-form-item>
             </el-form>
-            <el-tag type="warning" style="float:right;margin:3px;">离线:2</el-tag>
-            <el-tag type="danger" style="float:right;margin:3px;">异常:3</el-tag>            
-            <el-tag style="float:right;margin:3px;">正常:5</el-tag>
-            <el-tag style="float:right;margin:3px;">总数:10</el-tag>
         </el-col>
         
         <el-col id="room2">
-            <div v-for="(item, index) in deviceList" :class="item.classType"  @click="addTab(item)"
-            @mouseover="showMessage(item)" @mouseout="hideMessage(item)">
-                <p v-if="item.sType==39" style="padding-left:100px;display:none;" :id="item.sId">
-                   {{item.des}}<br/>
-                   排风管道静压：{{item.value}}<br/>
-                   风机-运行/停止：运行<br/>
-                   风机-手动/自动：自动<br/>
-                   风机状态-正常/报警：正常<br/>
-                   防火阀连锁：<br/>
-                   <el-button  size="small" @click="handleExhaust(item)">一键强排</el-button>
-                </p>
-                <p v-else-if="item.sType==40" style="padding-left:100px;display:none;" :id="item.sId">
-                   {{item.des}}<br/>
-                   新风管道静压：{{item.value}}<br/>
-                   风机-运行/停止：运行<br/>
-                   风机-手动/自动：自动<br/>
-                   风机状态-正常/报警：正常<br/>
-                   防火阀连锁：<br/>
-                   新风管道温度：{{item.value}}<br/>
-                   新风管道湿度：{{item.value}}<br/>
-                   防冻开关状态：开<br/>
-                   气流开关状态：开<br/>
-                   <el-button  size="small" @click="handleExhaust(item)">一键强排</el-button>
-                </p>
-                <p v-else="item.sType!=39 && item.sType!=40" style="padding-left:100px;" :id="item.sId">
-                   {{item.des}}<br/>
-                   当前值：{{item.value}}<br/>
-                   <el-button  size="small" @click="handleExhaust(item)">一键强排</el-button>
-                </p>
-                
+            <div v-for="(item, index) in deviceList" :class="item.classType"  @click="addTab(item)">
+                <p style="padding-left:100px;">
+                   {{item.fDes}}<br/>
+                   {{item.rDes}}<br/>
+                   {{item.des}}
+                </p>               
             </div>
         </el-col>
 
@@ -96,10 +68,47 @@
                 <div id="main" ref="mainBox" :style="{width:'420px',height:'280px'}"></div>
             </div>
         </el-tab-pane>
-        -->
         <el-tab-pane v-for="(item, index) in chartTabs" :key="item.name" :name="item.name" closable
             :label="item.label">
                 <div :id="item.sIdDiv" :style="{width:'700px',height:'280px'}"></div>            
+        </el-tab-pane>
+        -->
+        <el-tab-pane v-for="(item, index) in chartTabs" :key="item.name" :name="item.name" closable
+            :label="item.label">
+            <p v-if="item.sType==39" style="padding-left:10px" :id="item.sId">
+                   {{item.des}}<br/>
+                   排风管道静压：{{item.value}}<br/>
+                   风机-运行/停止：运行<br/>
+                   风机-手动/自动：自动<br/>
+                   风机状态-正常/报警：正常<br/>
+                   防火阀连锁：<br/>
+                   <!--
+                   <el-button  size="small" @click="handleExhaust(item)">一键强排</el-button>
+                   -->
+                </p>
+                <p v-else-if="item.sType==40" style="padding-left:10px;" :id="item.sId">
+                   {{item.des}}<br/>
+                   新风管道静压：{{item.value}}<br/>
+                   风机-运行/停止：运行<br/>
+                   风机-手动/自动：自动<br/>
+                   风机状态-正常/报警：正常<br/>
+                   防火阀连锁：<br/>
+                   新风管道温度：{{item.value}}<br/>
+                   新风管道湿度：{{item.value}}<br/>
+                   防冻开关状态：开<br/>
+                   气流开关状态：开<br/>
+                   <!--
+                   <el-button  size="small" @click="handleExhaust(item)">一键强排</el-button>
+                   -->
+                </p>
+                <p v-else="item.sType!=39 && item.sType!=40" style="padding-left:10px;" :id="item.sId">
+                   {{item.des}}<br/>
+                   当前值：{{item.value}}<br/>
+                   <!--
+                   <el-button  size="small" @click="handleExhaust(item)">一键强排</el-button>
+                   -->
+                </p>
+            <div :id="item.sIdDiv" :style="{width:'700px',height:'280px'}"></div>           
         </el-tab-pane>
         </el-tabs>
     </div>
@@ -291,6 +300,7 @@ export default {
             this.chartTabs.push({
                 sIdDiv : 'main_' + target.sId,
                 sId : target.sId,
+                sType: target.sType,
                 label: targetName,
                 name: newTabName
             });
@@ -443,7 +453,7 @@ export default {
 .frequency_converter_Normal {
     background: url('~@/assets/fanCoiler/frequency_converter_normal.png') left center no-repeat;
     width:33%;
-    height: 200px;
+    height: 100px;
     float:left;
     padding: 20px;
 }
@@ -508,7 +518,7 @@ export default {
 .frequency_converter_Alarm {
     background: url('~@/assets/fanCoiler/frequency_converter_alarm.png') left center no-repeat;
     width:33%;
-    height: 200px;
+    height: 100px;
     float:left;
 }
 
