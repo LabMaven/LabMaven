@@ -26,6 +26,12 @@
             <el-table-column prop="alarmTypeDes" label="是否告警" min-width="60" sortable>
             </el-table-column>
 
+            <el-table-column prop="sMax" label="上门限值" min-width="60" sortable>
+            </el-table-column>
+
+            <el-table-column prop="sMin" label="下门限值" min-width="60" sortable>
+            </el-table-column>
+
             <el-table-column label="操作" width="200">
                 <template scope="scope">       
                     <el-button size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
@@ -56,9 +62,17 @@
                 </el-form-item>
                 <el-form-item label="是否需要告警" prop="alarmType">                    
                     <el-select v-model="editForm.alarmType" placeholder="请选择是否需要告警" style="width:80%;">
-                        <el-option label="是" value="1">是</el-option>
-                        <el-option label="否" value="0">否</el-option>
+                        <el-option label="是" value="1"></el-option>
+                        <el-option label="否" value="0"></el-option>
                     </el-select>
+                </el-form-item>
+                <el-form-item label="上门限值" prop="sMax">
+                    <el-input v-model="editForm.sMax" auto-complete="off"
+                        style="width:80%;"></el-input>
+                </el-form-item>
+                <el-form-item label="下门限值" prop="sMin">
+                    <el-input v-model="editForm.sMin" auto-complete="off"
+                        style="width:80%;"></el-input>
                 </el-form-item>
             </el-form>
             <div slot="footer" class="dialog-footer">
@@ -103,7 +117,9 @@
                     cId: '',
                     sId: '',
                     des: '',
-                    alarmType: ''
+                    alarmType: '',
+                    sMax: null,
+                    sMin: null 
                 }        
             }
         },

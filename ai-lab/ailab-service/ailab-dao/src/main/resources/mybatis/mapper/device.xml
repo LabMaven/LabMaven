@@ -12,7 +12,7 @@
          from e_data tmp1,
               (select max(input_time) input_time,s_id from e_data GROUP BY s_id) tmp2
          where tmp1.s_id=tmp2.s_id and tmp1.input_time = tmp2.input_time
-         limit 1) e
+         GROUP BY tmp1.s_id) e
         on e.s_id = c.s_id
         where left(c.s_id, 10) = r.r_id
           and r.f_id = f.f_id
@@ -70,7 +70,8 @@
         update c_define
         set
         <if test="alarmType != null">alarm_type = #{alarmType},</if>
-        s_id = #{sId}
+        <if test="sMax != null">s_max = #{sMax},</if>
+        <if test="sMin != null">s_min = #{sMin}</if>
         where s_id = #{sId}
     </update>
     

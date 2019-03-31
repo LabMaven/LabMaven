@@ -29,16 +29,16 @@ public class Sensor {
 
 	private String des;
 
-	private int sMax;
+	private Integer sMax;
 
-	private int sMin;
+	private Integer sMin;
 
 	private int value;
 
 	@JSONField(format = "yyyy-MM-dd HH:mm:ss")
 	private Date inputTime;
 
-	private Integer alarmType;
+	private String alarmType;
 
 	private String alarmTypeDes;
 
@@ -132,19 +132,19 @@ public class Sensor {
 		this.des = des;
 	}
 
-	public int getsMax() {
+	public Integer getsMax() {
 		return sMax;
 	}
 
-	public void setsMax(int sMax) {
+	public void setsMax(Integer sMax) {
 		this.sMax = sMax;
 	}
 
-	public int getsMin() {
+	public Integer getsMin() {
 		return sMin;
 	}
 
-	public void setsMin(int sMin) {
+	public void setsMin(Integer sMin) {
 		this.sMin = sMin;
 	}
 
@@ -164,11 +164,11 @@ public class Sensor {
 		this.inputTime = inputTime;
 	}
 
-	public Integer getAlarmType() {
+	public String getAlarmType() {
 		return alarmType;
 	}
 
-	public void setAlarmType(Integer alarmType) {
+	public void setAlarmType(String alarmType) {
 		this.alarmType = alarmType;
 	}
 
