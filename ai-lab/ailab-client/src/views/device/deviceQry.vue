@@ -130,7 +130,7 @@
         </el-dialog>
 
         <el-col :span="24" class="toolbar">
-            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageObj.curPage" :page-sizes="[10, 20, 50, 100]" :page-size="pageObj.pageSize" :total="pageObj.total" layout="total, sizes, prev, pager, next, jumper" style="float:right;">
+            <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="pageObj.curPage" :page-sizes="[15, 30, 60]" :page-size="pageObj.pageSize" :total="pageObj.total" layout="total, sizes, prev, pager, next, jumper" style="float:right;">
             </el-pagination>
         </el-col>
         </el-tab-pane>
@@ -202,7 +202,7 @@ export default {
             // 分页对象
             pageObj: {
                 pageNum: 1, // 页码
-                pageSize: 10, // 每页数量
+                pageSize: 15, // 每页数量
                 total: 0, // 总数
                 curPage: 1, // 当前页
                 orderBy: ""

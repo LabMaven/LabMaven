@@ -92,7 +92,7 @@ public class DeviceService {
 	 * @return PageInfo
 	 */
 	public PageInfo<Sensor> getSensorCollectPage(Page page, Sensor cond) {
-		PageHelper.startPage(page.getPageNum(), page.getPageSize() * 3);
+		PageHelper.startPage(page.getPageNum(), page.getPageSize());
 		if (!StringUtil.isNullOrEmpty(page.getOrderBy())) {
 			PageHelper.orderBy(page.getOrderBy());
 		}
@@ -102,11 +102,6 @@ public class DeviceService {
 		convertSensorList(deviceList);
 
 		PageInfo<Sensor> pageResult = new PageInfo<Sensor>(deviceList);
-		long total = 0;
-		if (!CollectionUtils.isEmpty(deviceList)) {
-			total = pageResult.getTotal() % 3 == 0 ? pageResult.getTotal() / 3 : pageResult.getTotal() / 3 + 1;
-		}
-		pageResult.setTotal(total);
 		return pageResult;
 	}
 
