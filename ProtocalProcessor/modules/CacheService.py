@@ -3,39 +3,42 @@
 import pymysql
 from LoggerService import LoggerService
 
-CacheDict = {}
 #localLogger = LoggerService().getlog()
 
-def main():
-    #localLogger.info("This is the main function in CacheServie!")
-    #CacheDict = { "b01f001r0001c00001" : { "ip": "127.0.0.1", "port" : "10001", "address": "40000", "length" : "1" } }
+class CacheService:
 
-    conn = pymysql.connect(host="localhost", user="root",password="1qaz!QAZ", db="ailab", port=3306)
-    #localLogger.info(conn)
-    cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
-    #localLogger.info(cursor)
-    effect_row = cursor.execute("select * from c_define")
-    #localLogger.info(effect_row)
-    #rows=cursor.fetchall()
-    #print(rows)
+    def __init__(cls):
+        if not hasattr(cls, "CacheDict"):
+            CacheService.CacheDict={}
 
-    hosts_mapping_dict={}
+    def instance(cls,*args, **kwargs):
+        if not hasattr(cls, "_instance"):
+            CacheService._instance = CacheService(*args, **kwargs)
+        return CacheService._instance
 
-    for row in cursor.fetchall():
-        #print(row["s_id"] + "m_t_ip :" + row["m_t_ip"])
-        #print(row["s_id"] + "m_t_port :" + row["m_t_port"])
-        #print(row["s_id"] + "m_t_address :" + str(row["m_t_address"]))
-        #print(row["s_id"] + "m_t_lenght :" + str(row["m_t_lenght"]))
-        if row["s_id"] not in hosts_mapping_dict:
-            hosts_mapping_dict[row["s_id"]]={}
-        hosts_mapping_dict[row["s_id"]]["m_t_ip"]=row["m_t_ip"]
-        hosts_mapping_dict[row["s_id"]]["m_t_port"] = row["m_t_port"]
-        hosts_mapping_dict[row["s_id"]]["m_t_address"] = row["m_t_address"]
-        hosts_mapping_dict[row["s_id"]]["m_t_lenght"] = row["m_t_lenght"]
+    def loadcache(self):
+        conn = pymysql.connect(host="localhost", user="root",password="1qaz!QAZ", db="ailab", port=3306)
+        cursor = conn.cursor(cursor=pymysql.cursors.DictCursor)
+        #localLogger.info(cursor)
+        effect_row = cursor.execute("select * from c_define_dyn")
 
-    #print(hosts_mapping_dict)
-    CacheDict=hosts_mapping_dict
+        host_cache_dict={}
 
-    return CacheDict
+        for row in cursor.fetchall():
+            if row["s_id"] not in host_cache_dict:
+                host_cache_dict[row["s_id"]]={}
+            host_cache_dict[row["s_id"]]["alarm_status"]=row["alarm_status"]
 
-#main()
+        print("host_cache_dict=%s" % (host_cache_dict))
+        CacheService.CacheDict=host_cache_dict
+
+        return CacheService.CacheDict
+
+    #main()
+#cache1 = CacheService()
+#cache1.loadcache()
+#print(CacheService.CacheDict)
+
+#cache2 = CacheService()
+#print(CacheService.CacheDict)
+

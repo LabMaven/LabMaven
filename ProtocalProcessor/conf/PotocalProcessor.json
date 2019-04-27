@@ -1,9 +1,9 @@
 {
 	  "common": {
-		    "checkInterval": 2
+		    "checkInterval": 1
 	  },
 	  "mysql": {
-        "host": "localhost",
+        "host": "127.0.0.1",
 		    "user": "root",
 		    "password": "1qaz!QAZ",
 		    "db": "ailab",
