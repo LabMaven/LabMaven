@@ -8,7 +8,7 @@
             when c.alarm_type = 0 then '否' else '' end) alarmTypeDes 
         from  b_define b, f_define f, r_define r, c_define c
         left join 
-        (select tmp1.*
+        (select max(tmp1.input_time) input_time, tmp1.s_id, max(tmp1.value) value
          from e_data tmp1,
               (select max(input_time) input_time,s_id from e_data GROUP BY s_id) tmp2
          where tmp1.s_id=tmp2.s_id and tmp1.input_time = tmp2.input_time
