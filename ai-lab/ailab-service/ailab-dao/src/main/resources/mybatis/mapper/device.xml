@@ -83,7 +83,7 @@
     <select id="countDeviceData" parameterType="java.util.Map" resultType="java.util.Map">
         select count(1) total, 
                sum(case when e.value &gt; c.s_max or e.value &lt; c.s_min then 1 else 0 end) abnormalCount
-        from c_define_bak c
+        from c_define c
         left join 
             (select tmp1.*
              from e_data tmp1,
