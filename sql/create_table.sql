@@ -187,3 +187,4 @@ CREATE TABLE `c_ctl_info_his` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='控制器控制信息历史表';
 
 
+alter table c_define add coords VARCHAR(20) comment '传感器热区坐标值,格式:x1,y1,x2,y2';
