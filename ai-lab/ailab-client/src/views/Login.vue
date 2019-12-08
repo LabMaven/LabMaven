@@ -85,7 +85,7 @@ export default {
                             localStorage.setItem('user', JSON.stringify(localUserInfo));
                             
                             
-                            this.$router.push({ path: '/deviceQry' });
+                            this.$router.push({ path: '/desk' });
                         }
                     });
                 } else {

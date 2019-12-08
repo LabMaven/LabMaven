@@ -29,38 +29,8 @@
                 </el-form-item>
                 <el-form-item>
                     <el-button type="primary" v-on:click="getSensorCollect">查询</el-button>
-                </el-form-item>
-                <!--
-                <el-form-item>
-                    <el-button v-on:click="getSensorList(1)">压差</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button v-on:click="getSensorList(2)">温湿度</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button v-on:click="getSensorList(4)">通风柜门高</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button v-on:click="getSensorList(5)">工作状态</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button v-on:click="getSensorList(6)">面风速</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button v-on:click="getSensorList(7)">余风量</el-button>
-                </el-form-item>
-                <el-form-item>
-                    <el-button v-on:click="getSensorList(8)">蝶阀风量</el-button>
-                </el-form-item>
-                -->
+                </el-form-item>                
             </el-form>
-
-            <!--
-            <el-tag type="warning" style="float:right;margin:3px;">离线:2</el-tag>
-            <el-tag type="danger" style="float:right;margin:3px;">异常:3</el-tag>            
-            <el-tag style="float:right;margin:3px;">正常:5</el-tag>
-            <el-tag style="float:right;margin:3px;">总数:10</el-tag>
-            -->
         </el-col>
 
         <el-col>
@@ -80,6 +50,9 @@
                         {{item.fDes}}<br/>
                         {{item.rDes}}<br/>
                         {{item.des}}<br/>
+                        <span v-for="(subItem, index) in item.valueList">
+                            {{subItem}}<br/>
+                        </span>
                         <!--压差和余风量为模拟量-->
                         <el-button size="small" v-if="(item.sType == 1 || item.sType == 10) 
                             && item.configurable == 0"
@@ -136,7 +109,7 @@
         </el-tab-pane>
         <el-tab-pane v-for="(item, index) in chartTabs" :key="item.name" :name="item.name" closable
             :label="item.label">
-            <!--列表-->
+            <!--列表
             <el-table :data="subSensorList" highlight-current-row v-loading="listLoading" style="width: 70%;">
                 <el-table-column prop="cId" label="控制器ID" min-width="80">
                 </el-table-column>
@@ -150,6 +123,7 @@
                 <el-table-column prop="value" label="当前值" min-width="60">
                 </el-table-column>
             </el-table>
+            -->
             <div v-for="(item, index) in subSensorList" :id="'main_'+item.sId"
                 :style="{width:'700px',height:'280px'}"></div>            
         </el-tab-pane>
@@ -229,7 +203,8 @@ export default {
                 cId: '',
                 sId: '',
                 sValue: ''
-            },            
+            },
+            showExhaustBtn: false        
         }
     },
     watch: {
@@ -263,7 +238,7 @@ export default {
 
             if(data.level == 3 || data.level == 4) {
                this.filters.sType = "";
-               this.getSensorCollect();
+               this.getSensorCollect();               
             }            
         },
         getRooms() {
@@ -300,8 +275,7 @@ export default {
             let params = Object.assign({"sPid" : sId}, {"pageSize": 30});
             getChartData(params).then(res => {
                 this.subChartList = res.data;
-                this.subChartList.forEach(function(item){
-                console.log('sid'+item.sid);
+                this.subChartList.forEach(function(item){                
                     /*ECharts图表*/
                     var timer = setInterval(() => {
                         var sIdDiv = 'main_' + item.sId;
@@ -342,12 +316,9 @@ export default {
                             myChart.setOption(option); 
                             clearInterval(timer);
                         }
-
                     }, 1000);
                 });
-
-            });
-            
+            });            
         },
 
         addTab(target) {
@@ -389,33 +360,35 @@ export default {
         getSensorCollect() {
             // 对象合并:查询对象+分页对象
             let param = Object.assign({}, this.filters, this.pageObj);
-            
-            //this.firstTimer = setInterval(() => {
+            $("#allExhaust").css('display', 'none');      
 
-            document.getElementById("allExhaust").style.display='none';
-
-                getSensorCollect(param).then(res => {
-                    let { msg, code, data } = res;
-                    this.deviceList = data.list;
-
-                    this.deviceList.forEach(function(item) {
-                        if (item.sType == 5 && item.configurable == 0) {
-                            document.getElementById('allExhaust').style.display='block';
-                        }
-                    });
-
-                    this.pageObj.pageNum = data.pageNum;
-                    this.pageObj.total = data.total;
-                    this.pageObj.orderBy = data.orderBy;
+            getSensorCollect(param).then(res => {
+                let { msg, code, data } = res;
+                this.deviceList = data.list;
+                this.deviceList.forEach(function(item) {
+                    if (item.sType == 5 && item.configurable == 0) {
+                        $("#allExhaust").css('display', 'block');
+                    }
                 });
-            //} , 30000);
+
+                this.pageObj.pageNum = data.pageNum;
+                this.pageObj.total = data.total;
+                this.pageObj.orderBy = data.orderBy;   
+            });  
+
+            this.firstTimer = setInterval(() => {
+                this.getSensorCollect2();
+            }, 2000);            
         },
-        getSensorList(sType) {
-            this.filters.sType = sType;
-            this.filters.rId = "";
-            this.filters.cId = "";
-            this.getSensorCollect();
-        }, 
+        getSensorCollect2() {
+            // 对象合并:查询对象+分页对象
+            let param = Object.assign({}, this.filters, this.pageObj);            
+
+            getSensorCollect(param).then(res => {
+                let { msg, code, data } = res;
+                this.deviceList = data.list;   
+            });
+        },
         getDeviceTree(){
             getDeviceTree({"bId" : "b0001"}).then((res) => {
                 this.models = res.data;
@@ -500,7 +473,7 @@ export default {
                 if (valid) {
                     this.editLoading = true;
                     let params = Object.assign({}, this.editForm); 
-                    console.log(params);                         
+                                         
                     addCtlInfo(params).then((res) => {
                         this.editLoading = false;
                         if (res.code !== 0) {
@@ -541,11 +514,18 @@ export default {
         },
         showDetail() {
             
-        }  
+        },
+        initSensor() {
+            if (this.$route.params.rId) {      
+                this.filters.rId = this.$route.params.rId;
+                this.getSensorCollect();
+            }
+        }
     },
     mounted() {
         this.getDeviceTree();
         this.getRooms();
+        this.initSensor();
     },
     beforeDestroy() {
         if(this.firstTimer) { //如果定时器还在运行 或者直接关闭，不用判断
@@ -563,12 +543,12 @@ export default {
 <style>
 .sensor_div {
     width:33%;
-    height:100px;
+    height:160px;
     float:left;
 }
 .sensor_info {
     width:50%;
-    height:100px;
+    height:160px;
     float:right;
 }
 .pressure_Normal {
