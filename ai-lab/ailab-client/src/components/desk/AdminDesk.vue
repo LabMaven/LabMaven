@@ -3,13 +3,13 @@
         <el-row type="flex" class="row-bg" justify="center">
             <el-col :span="12">
 		        <div>
-			        <h2>ÆÕÍ¨Éè±¸±ı×´Í¼(×ÜÊı£º<span id="total"></span>)</h2>
+			        <h2>æ™®é€šè®¾å¤‡é¥¼çŠ¶å›¾(æ€»æ•°ï¼š<span id="total"></span>)</h2>
 			        <div id="main" style="width: 100%;height: 300px;"></div>
 		        </div>
             </el-col>
             <el-col :span="12">
 		        <div>
-			        <h2>·ç»úÅÌ¹ÜÉè±¸±ı×´Í¼(×ÜÊı£º<span id="fanTotal"></span>)</h2>
+			        <h2>é£æœºç›˜ç®¡è®¾å¤‡é¥¼çŠ¶å›¾(æ€»æ•°ï¼š<span id="fanTotal"></span>)</h2>
 			        <div id="main2" style="width: 100%;height: 300px;"></div>
 		        </div>
             </el-col>
@@ -23,9 +23,9 @@ import { countSensor } from '../../api/device';
 
 let echarts = require('echarts');
 
-// ÒıÈë±ıÍ¼×é¼ş
+// å¼•å…¥é¥¼å›¾ç»„ä»¶
 require('echarts/lib/chart/pie');
-// ÒıÈëÌáÊ¾¿òºÍÍ¼Àı×é¼ş
+// å¼•å…¥æç¤ºæ¡†å’Œå›¾ä¾‹ç»„ä»¶
 require('echarts/lib/component/title');
 require('echarts/lib/component/tooltip');
 require('echarts/lib/component/legend');
@@ -52,25 +52,25 @@ export default {
                         document.getElementById('total').innerHTML = total;
                         document.getElementById('fanTotal').innerHTML = fanTotal;
 
-                        // »æÖÆÍ¼±í
+                        // ç»˜åˆ¶å›¾è¡¨
                         this.echartPie1(total - abnormalCount, abnormalCount);
 			            this.echartPie2(fanTotal - fanAbnormalCount, fanAbnormalCount);
                     }
                 });
 		    },
-			echartPie1(normalCount, abnormalCount) { // ±ı×´Í¼µÄÏà¹ØÅäÖÃÓëÊÂ¼ş 
+			echartPie1(normalCount, abnormalCount) { // é¥¼çŠ¶å›¾çš„ç›¸å…³é…ç½®ä¸äº‹ä»¶ 
 				
-				// 1. Ä¬ÈÏÑ¡ÖĞÁËÄ³Ò»¸ö
-				// 2. Êó±êÀë¿ª¼ÇÂ¼ÉÏ´ÎÑ¡ÖĞµÄ×÷Îªµ±Ç°Ñ¡ÖĞµÄ
+				// 1. é»˜è®¤é€‰ä¸­äº†æŸä¸€ä¸ª
+				// 2. é¼ æ ‡ç¦»å¼€è®°å½•ä¸Šæ¬¡é€‰ä¸­çš„ä½œä¸ºå½“å‰é€‰ä¸­çš„
 				
 				
 				
 				var echarts = require('echarts');
  
-				// »ùÓÚ×¼±¸ºÃµÄdom£¬³õÊ¼»¯echartsÊµÀı
+				// åŸºäºå‡†å¤‡å¥½çš„domï¼Œåˆå§‹åŒ–echartså®ä¾‹
 				var myChart = echarts.init(document.getElementById('main'));
-				// ²»ÄÜÔÚµ¥¸öÈİÆ÷ÉÏ³õÊ¼»¯¶à¸ö ECharts ÊµÀı¡£
-				//ÊµÀıÈİÆ÷£¬Ò»°ãÊÇÒ»¸ö¾ßÓĞ¸ß¿íµÄdivÔªËØ¡£
+				// ä¸èƒ½åœ¨å•ä¸ªå®¹å™¨ä¸Šåˆå§‹åŒ–å¤šä¸ª ECharts å®ä¾‹ã€‚
+				//å®ä¾‹å®¹å™¨ï¼Œä¸€èˆ¬æ˜¯ä¸€ä¸ªå…·æœ‰é«˜å®½çš„divå…ƒç´ ã€‚
  
 				var option = {
 					tooltip: {
@@ -81,10 +81,10 @@ export default {
 					legend: {
 						orient: 'vertical',
 						x: 'left',
-						data: [ 'Òì³£¸öÊı', 'Õı³£¸öÊı' ]
+						data: [ 'å¼‚å¸¸ä¸ªæ•°', 'æ­£å¸¸ä¸ªæ•°' ]
 					},
 					series: [{
-						name: '·ÃÎÊÀ´Ô´',
+						name: 'è®¿é—®æ¥æº',
 						type: 'pie',
 						radius: ['50%', '70%'],
 						avoidLabelOverlap: false,
@@ -109,14 +109,14 @@ export default {
 						data: [
 							{
 								value: abnormalCount,
-								name: 'Òì³£¸öÊı'
+								name: 'å¼‚å¸¸ä¸ªæ•°'
 							},
 						    {
 								value: normalCount,
-								name: 'Õı³£¸öÊı'
+								name: 'æ­£å¸¸ä¸ªæ•°'
 							},
 						],
-						itemStyle: { // ±ı×´Í¼Ö®¼ä¸ô¿ªÒ»µãµÄÅäÖÃ²ÎÊı
+						itemStyle: { // é¥¼çŠ¶å›¾ä¹‹é—´éš”å¼€ä¸€ç‚¹çš„é…ç½®å‚æ•°
 							normal: {
 								borderWidth: 4,
 								borderColor: '#ffffff',
@@ -134,9 +134,9 @@ export default {
 						dataIndex: index
 					});
 				}
-				//¼ÇÂ¼ÉÏ´Î¸ßÁÁµÄË÷Òı
+				//è®°å½•ä¸Šæ¬¡é«˜äº®çš„ç´¢å¼•
 				var lastMouseOverIndex = null;
-				// mouseoverÊÂ¼ş£¬¼ÇÂ¼µ±Ç°Êı¾İË÷Òı²¢È¡ÏûÆäËû¸ßÁÁ£¬overÔÚoutÖ®ºó
+				// mouseoveräº‹ä»¶ï¼Œè®°å½•å½“å‰æ•°æ®ç´¢å¼•å¹¶å–æ¶ˆå…¶ä»–é«˜äº®ï¼Œoveråœ¨outä¹‹å
 				myChart.on('mouseover', function(params) {
 					var dataLen = option.series[0].data.length;
 					lastMouseOverIndex = params.dataIndex;
@@ -150,7 +150,7 @@ export default {
 						}
 					}
 				});
-				// mouseoutÊÂ¼ş£¬½«ÉÏ´ÎµÄ¸ßÁÁ
+				// mouseoutäº‹ä»¶ï¼Œå°†ä¸Šæ¬¡çš„é«˜äº®
 				myChart.on('mouseout', function(params) {
 					myChart.dispatchAction({
 						type: 'highlight',
@@ -159,17 +159,17 @@ export default {
 					})
 				});
 			},
-			echartPie2(fanNormalCount, fanAbnormalCount) { // ±ı×´Í¼µÄÏà¹ØÅäÖÃÓëÊÂ¼ş 
+			echartPie2(fanNormalCount, fanAbnormalCount) { // é¥¼çŠ¶å›¾çš„ç›¸å…³é…ç½®ä¸äº‹ä»¶ 
 				
-				// 1. Ä¬ÈÏÑ¡ÖĞÁËÄ³Ò»¸ö
-				// 2. Êó±êÀë¿ª¼ÇÂ¼ÉÏ´ÎÑ¡ÖĞµÄ×÷Îªµ±Ç°Ñ¡ÖĞµÄ			
+				// 1. é»˜è®¤é€‰ä¸­äº†æŸä¸€ä¸ª
+				// 2. é¼ æ ‡ç¦»å¼€è®°å½•ä¸Šæ¬¡é€‰ä¸­çš„ä½œä¸ºå½“å‰é€‰ä¸­çš„			
 				
 				var echarts = require('echarts');
  
-				// »ùÓÚ×¼±¸ºÃµÄdom£¬³õÊ¼»¯echartsÊµÀı
+				// åŸºäºå‡†å¤‡å¥½çš„domï¼Œåˆå§‹åŒ–echartså®ä¾‹
 				var myChart = echarts.init(document.getElementById('main2'));
-				// ²»ÄÜÔÚµ¥¸öÈİÆ÷ÉÏ³õÊ¼»¯¶à¸ö ECharts ÊµÀı¡£
-				//ÊµÀıÈİÆ÷£¬Ò»°ãÊÇÒ»¸ö¾ßÓĞ¸ß¿íµÄdivÔªËØ¡£
+				// ä¸èƒ½åœ¨å•ä¸ªå®¹å™¨ä¸Šåˆå§‹åŒ–å¤šä¸ª ECharts å®ä¾‹ã€‚
+				//å®ä¾‹å®¹å™¨ï¼Œä¸€èˆ¬æ˜¯ä¸€ä¸ªå…·æœ‰é«˜å®½çš„divå…ƒç´ ã€‚
  
 				var option = {
 					tooltip: {
@@ -180,10 +180,10 @@ export default {
 					legend: {
 						orient: 'vertical',
 						x: 'left',
-						data: [ 'Òì³£¸öÊı', 'Õı³£¸öÊı' ]
+						data: [ 'å¼‚å¸¸ä¸ªæ•°', 'æ­£å¸¸ä¸ªæ•°' ]
 					},
 					series: [{
-						name: '·ÃÎÊÀ´Ô´',
+						name: 'è®¿é—®æ¥æº',
 						type: 'pie',
 						radius: ['50%', '70%'],
 						avoidLabelOverlap: false,
@@ -207,14 +207,14 @@ export default {
 						},
 						data: [{
 								value: fanAbnormalCount,
-								name: 'Òì³£¸öÊı',
+								name: 'å¼‚å¸¸ä¸ªæ•°',
 							},
 							{
 								value: fanNormalCount,
-								name: 'Õı³£¸öÊı'
+								name: 'æ­£å¸¸ä¸ªæ•°'
 							}
 						],
-						itemStyle: { // ±ı×´Í¼Ö®¼ä¸ô¿ªÒ»µãµÄÅäÖÃ²ÎÊı
+						itemStyle: { // é¥¼çŠ¶å›¾ä¹‹é—´éš”å¼€ä¸€ç‚¹çš„é…ç½®å‚æ•°
 							normal: {
 								borderWidth: 4,
 								borderColor: '#ffffff',
@@ -232,9 +232,9 @@ export default {
 						dataIndex: index
 					});
 				}
-				//¼ÇÂ¼ÉÏ´Î¸ßÁÁµÄË÷Òı
+				//è®°å½•ä¸Šæ¬¡é«˜äº®çš„ç´¢å¼•
 				var lastMouseOverIndex = null;
-				// mouseoverÊÂ¼ş£¬¼ÇÂ¼µ±Ç°Êı¾İË÷Òı²¢È¡ÏûÆäËû¸ßÁÁ£¬overÔÚoutÖ®ºó
+				// mouseoveräº‹ä»¶ï¼Œè®°å½•å½“å‰æ•°æ®ç´¢å¼•å¹¶å–æ¶ˆå…¶ä»–é«˜äº®ï¼Œoveråœ¨outä¹‹å
 				myChart.on('mouseover', function(params) {
 					var dataLen = option.series[0].data.length;
 					lastMouseOverIndex = params.dataIndex;
@@ -248,7 +248,7 @@ export default {
 						}
 					}
 				});
-				// mouseoutÊÂ¼ş£¬½«ÉÏ´ÎµÄ¸ßÁÁ
+				// mouseoutäº‹ä»¶ï¼Œå°†ä¸Šæ¬¡çš„é«˜äº®
 				myChart.on('mouseout', function(params) {
 					myChart.dispatchAction({
 						type: 'highlight',

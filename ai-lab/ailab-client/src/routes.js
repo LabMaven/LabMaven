@@ -1,4 +1,6 @@
 import Login from './views/Login.vue'
+import Desk from './views/desk/Desk.vue'
+import GetCoordinate from './views/desk/getCoordinate.vue'
 import NotFound from './views/404.vue'
 import Home from './views/Home.vue'
 import DefaultPage from './views/DefaultPage.vue'
@@ -9,6 +11,7 @@ import role from './views/user/role.vue'
 
 import dict from './views/config/dict.vue'
 
+import system from './views/device/system.vue'
 import deviceQry from './views/device/deviceQry.vue'
 import deviceCfg from './views/device/deviceCfg.vue'
 import fanCoiler from './views/device/fanCoiler.vue'
@@ -16,7 +19,6 @@ import fanCoiler from './views/device/fanCoiler.vue'
 import report from './views/report/report.vue'
 
 import hisChart from './views/report/hisChart.vue'
-
 
 import alarmQry from './views/alarm/alarmQry.vue'
 
@@ -26,6 +28,15 @@ let routes = [{
         component: Login,
         name: '',
         hidden: true
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '工作台',
+        children: [
+            { path: '/desk', component: Desk },
+            { path: '/getCoordinate', component: GetCoordinate }
+        ]
     },
     {
         path: '/',
@@ -40,8 +51,10 @@ let routes = [{
         path: '/',
         component: Home,
         name: '设备', 
-        children: [ 
+        children: [        
+            { path: '/system', component: system, name: '系统布局' },
             { path: '/deviceQry', component: deviceQry, name: '设备查询' },
+            { path: '/deviceQry/:rId', component: deviceQry, name: '设备查询' },
             { path: '/deviceCfg', component: deviceCfg, name: '设备配置管理' }
         ]
     },
@@ -75,6 +88,15 @@ let routes = [{
         name: '告警',
         children: [
             { path: '/alarmQry', component: alarmQry, name: '告警查询' }
+        ]
+    },
+    {
+        path: '/',
+        component: Home,
+        name: '用户',
+        children: [
+            { path: '/user', component: user, name: '用户管理' },
+            { path: '/role', component: role, name: '角色管理' }
         ]
     },
     {

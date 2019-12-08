@@ -12,7 +12,11 @@
         <el-tabs v-model="activeName">
             <el-tab-pane label="系统详情" name="first">
                 <el-col id="room2">
-                    <iframe id="my_iframe" :src="iframe_src"/>         
+                    <div class="data_div" id="data_div"></div>
+                    <div class="img_div">
+                        <img id="img" :src="imgSrc" usemap="#imgMap"/>
+                        <map name="imgMap" id="imgMap"></map>
+                    </div>         
                 </el-col>
             </el-tab-pane>
         </el-tabs>
@@ -23,7 +27,6 @@
 <script>
 import { getRooms, getSensors, getDeviceTree, getSensorDevList, getChartData, addCtlInfo, batchAddCtlInfo} from '../../api/device';
 import room1_img from '../../assets/system/r000000101.jpg';
-import iframe_src from '../../api/myThing.js';
 
 
 let echarts = require('echarts');
@@ -112,8 +115,7 @@ export default {
                 sValue: ''
             },
             imgSrc: '',
-            valText: '',
-            iframe_src: iframe_src     
+            valText: ''        
         }
     },
     watch: {
@@ -242,13 +244,9 @@ export default {
             this.filters.rId = "";
             this.filters.cId = "";
             this.getSensorDevList();
-        },
-        init() {
-            $("#my_iframe").src = iframe_src;
-        }
+        }  
     },
     mounted() {
-        this.init();
     },
     beforeDestroy() {
         if(this.firstTimer) { //如果定时器还在运行 或者直接关闭，不用判断
