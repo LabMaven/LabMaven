@@ -188,3 +188,14 @@ CREATE TABLE `c_ctl_info_his` (
 
 
 alter table c_define add coords VARCHAR(20) comment '传感器热区坐标值,格式:x1,y1,x2,y2';
+
+drop table if exists `s_system_map`;
+CREATE TABLE `s_system_map` (
+  `s_map_id` int(11) NOT NULL DEFAULT '1' COMMENT '系统图键值',
+  `s_point_id` int(11) DEFAULT NULL COMMENT '系统图测点序列号',
+  `coordinate` varchar(20) NOT NULL DEFAULT '' COMMENT '热区坐标',
+  `s_id` varchar(20) NOT NULL COMMENT '传感器Id',
+  `des` varchar(100) DEFAULT NULL COMMENT '协议端口号',
+  PRIMARY KEY (`s_map_id`,`s_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='传感器热区坐标数据表';
+
