@@ -315,22 +315,40 @@ public class DeviceService {
 			return;
 		}
 
-		List<DictInfo> dictList = dictDao.getByColName("sensor_type");
+		DictInfo dictCond = new DictInfo();
+		dictCond.setColName("sensor_type");
 
 		for (Sensor sensor : sensorList) {
-			for (DictInfo dictInfo : dictList) {
-				if (!StringUtil.isNullOrEmpty(sensor.getsType())
-						&& sensor.getsType().equals(String.valueOf(dictInfo.getDictCode()))) {
-					String sensorClass = dictInfo.getRemark();
-					if (sensor.getValue() < sensor.getsMin() || sensor.getValue() > sensor.getsMax()) {
-						sensorClass += "_Alarm";
-					} else {
-						sensorClass += "_Normal";
-					}
 
-					sensor.setClassType(sensorClass);
+			dictCond.setDictCode(Integer.valueOf(sensor.getsType()));
+			DictInfo sensorDict = dictDao.findByCode(dictCond);
+			String sensorClass = sensorDict.getRemark();
+
+			Sensor sensorCond = new Sensor();
+			sensorCond.setsPid(sensor.getsId());
+			List<Sensor> subSensorList = deviceDao.getSensorDataList(sensorCond);
+
+			boolean hasAlarm = false;
+			List<String> valueList = new ArrayList<String>();
+			for (Sensor subSensor : subSensorList) {
+				if (!hasAlarm
+						&& (subSensor.getValue() < subSensor.getsMin() || subSensor.getValue() > subSensor.getsMax())) {
+					hasAlarm = true;
 				}
+
+				dictCond.setDictCode(Integer.valueOf(subSensor.getsType()));
+				DictInfo subSensorDict = dictDao.findByCode(dictCond);
+
+				valueList.add(String.format("%s:%d", subSensorDict.getDictNote(), subSensor.getValue()));
 			}
+			sensor.setValueList(valueList);
+
+			if (hasAlarm) {
+				sensorClass += "_Alarm";
+			} else {
+				sensorClass += "_Normal";
+			}
+			sensor.setClassType(sensorClass);
 		}
 	}
 
