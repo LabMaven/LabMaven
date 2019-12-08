@@ -5,7 +5,8 @@
     <select id="getSensorDataList" parameterType="Sensor" resultType="Sensor">
         select c.*, b.des bDes, f.des fDes, r.des rDes, e.value,
            (case when c.alarm_type = 1 then '是'
-            when c.alarm_type = 0 then '否' else '' end) alarmTypeDes 
+            when c.alarm_type = 0 then '否' else '' end) alarmTypeDes,
+           map.coordinate 
         from  b_define b, f_define f, r_define r, c_define c
         left join 
         (select max(tmp1.input_time) input_time, tmp1.s_id, max(tmp1.value) value
@@ -14,6 +15,7 @@
          where tmp1.s_id=tmp2.s_id and tmp1.input_time = tmp2.input_time
          GROUP BY tmp1.s_id) e
         on e.s_id = c.s_id
+        left join s_system_map map on c.s_id = map.s_id
         where left(c.s_id, 10) = r.r_id
           and r.f_id = f.f_id
           and f.b_id = b.b_id
@@ -28,8 +30,11 @@
     </select>
     
     <select id="getSensorCollect" parameterType="Sensor" resultType="Sensor">
-        select c.*, b.des bDes, f.des fDes, r.des rDes
+        select c.*, b.des bDes, f.des fDes, r.r_id rId, r.des rDes,
+         map.coordinate, map.s_map_id
         from  b_define b, f_define f, r_define r, c_define c
+        left join s_system_map map 
+        on c.s_id = map.s_id
         where left(c.s_id, 10) = r.r_id
           and r.f_id = f.f_id
           and f.b_id = b.b_id
@@ -96,6 +101,10 @@
           and c.readorwrite = 0 
         <if test="qryNormal == 'true'">and c.s_type &lt; 30</if>
         <if test="qryFan == 'true'">and c.s_type &gt; 30</if>
+    </select>
+    
+    <select id="getSensorIds" resultType="Sensor">
+        select distinct s_id, c_id from c_define_bak;
     </select>
    
 </mapper>

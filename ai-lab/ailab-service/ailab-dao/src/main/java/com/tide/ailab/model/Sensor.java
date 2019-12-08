@@ -1,6 +1,7 @@
 package com.tide.ailab.model;
 
 import java.util.Date;
+import java.util.List;
 
 import com.alibaba.fastjson.annotation.JSONField;
 
@@ -17,7 +18,7 @@ public class Sensor {
 	private String cId;
 
 	/**
-	 * ´«¸ĞÆ÷¼¯ºÏid
+	 * ä¼ æ„Ÿå™¨é›†åˆid
 	 */
 	private String sPid;
 
@@ -43,14 +44,23 @@ public class Sensor {
 	private String alarmTypeDes;
 
 	/**
-	 * Ö»¶ÁÊôĞÔ£º0Ö»¶Á£»1ÔÊĞíĞ´Èë
+	 * åªè¯»å±æ€§ï¼š0åªè¯»ï¼›1å…è®¸å†™å…¥
 	 */
 	private int readOrWrite;
 
 	/**
-	 * ÊÇ·ñÖ§³Ö¿ÉÅäÖÃ£º0Ö§³Ö£»1²»Ö§³Ö
+	 * æ˜¯å¦æ”¯æŒå¯é…ç½®ï¼š0æ”¯æŒï¼›1ä¸æ”¯æŒ
 	 */
 	private int configurable;
+
+	/**
+	 * ä¼ æ„Ÿå™¨çƒ­åŒºåæ ‡å€¼,æ ¼å¼:x1,y1,x2,y2
+	 */
+	private String coordinate;
+
+	private Integer sMapId;
+
+	private List<String> valueList;
 
 	public String getbDes() {
 		return bDes;
@@ -194,6 +204,30 @@ public class Sensor {
 
 	public void setConfigurable(int configurable) {
 		this.configurable = configurable;
+	}
+
+	public String getCoordinate() {
+		return coordinate;
+	}
+
+	public void setCoordinate(String coordinate) {
+		this.coordinate = coordinate;
+	}
+
+	public Integer getsMapId() {
+		return sMapId;
+	}
+
+	public void setsMapId(Integer sMapId) {
+		this.sMapId = sMapId;
+	}
+
+	public List<String> getValueList() {
+		return valueList;
+	}
+
+	public void setValueList(List<String> valueList) {
+		this.valueList = valueList;
 	}
 
 }

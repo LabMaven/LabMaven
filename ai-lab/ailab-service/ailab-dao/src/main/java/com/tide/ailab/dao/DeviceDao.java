@@ -51,5 +51,7 @@ public interface DeviceDao {
 	Map<String, Object> countDeviceData(Map<String, Object> param);
 
 	List<Sensor> getSubSensors(String sPid);
-
+	
+	List<Sensor> getSensorIds();
+	
 }
